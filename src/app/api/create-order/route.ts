@@ -105,34 +105,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-  if (request.method !== 'POST') {
-    return new NextResponse('Method not allowed', { status: 405 });
-  }
-
-  try {
-    const body = await request.json();
-    const result = await createOrder(body);
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: result.error, details: result.details },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { orderId: result.orderId },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('API Error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    );
-  }
-}
