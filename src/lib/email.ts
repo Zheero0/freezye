@@ -8,9 +8,6 @@ import { OrderStatusUpdateEmail } from '@/emails/OrderStatusUpdateEmail';
 import { AdminNewOrderEmail } from '@/emails/AdminNewOrderEmail';
 import type { Order } from './types';
 
-// Force dynamic rendering for all email functions
-export const dynamic = 'force-dynamic';
-
 type EmailType = 'confirmation' | 'statusUpdate';
 
 export async function sendEmail({ type, order, newStatus }: { 
