@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unhandled error in send-email API route:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

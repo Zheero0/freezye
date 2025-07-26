@@ -121,9 +121,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, message: 'Order created successfully' });
 
-  } catch (error: any) {
-    console.error('Error creating order:', error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error creating order:', message);
     // Generic error to avoid leaking implementation details
-    return NextResponse.json({ error: 'An internal error occurred. Please try again.' }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
