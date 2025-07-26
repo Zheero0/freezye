@@ -13,6 +13,84 @@ import { sendOrderConfirmation } from '@/lib/email';
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
 
+// Server action for order creation
+export async function createOrder(data: any) {
+  try {
+    const validationResult = orderSchema.safeParse(data);
+    if (!validationResult.success) {
+      return { success: false, error: 'Validation failed', details: validationResult.error.format() };
+    }
+    
+    const validatedData = validationResult.data;
+    const selectedService = services.find(s => s.id === validatedData.serviceId);
+    
+    if (!selectedService) {
+      return { success: false, error: 'Service not found' };
+    }
+
+    // Calculate costs
+    const baseCost = selectedService.price * validatedData.quantity;
+    const repaintCostTotal = validatedData.repaint ? repaintCost * validatedData.quantity : 0;
+    const deliveryCost = validatedData.deliveryMethod === 'collection' ? collectionFee : 0;
+    const totalCost = baseCost + repaintCostTotal + deliveryCost;
+
+    // Normalize phone number
+    const normalizedPhoneNumber = validatedData.phoneNumber.replace(/\D/g, '');
+
+    // Prepare order data
+    const orderData = {
+      ...validatedData,
+      phoneNumber: normalizedPhoneNumber,
+      totalCost,
+      status: 'pending' as const,
+      serviceName: selectedService.name,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    // Save to Firestore
+    const orderRef = await addDoc(collection(db, 'orders'), orderData);
+    
+    // Prepare order data for email
+    const orderForEmail: Order = {
+      id: orderRef.id,
+      customerName: validatedData.fullName,
+      service: selectedService.name,
+      date: validatedData.bookingDate,
+      status: 'pending',
+      userEmail: validatedData.email,
+      phoneNumber: normalizedPhoneNumber,
+      totalCost,
+      notes: validatedData.notes,
+      deliveryMethod: validatedData.deliveryMethod,
+      pickupAddress: validatedData.pickupAddress,
+      quantity: validatedData.quantity,
+      repaint: validatedData.repaint,
+      paymentMethod: validatedData.paymentMethod,
+      paymentIntentId: validatedData.paymentIntentId,
+      bookingDate: validatedData.bookingDate,
+      bookingTime: validatedData.bookingTime,
+      serviceName: selectedService.name,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Send confirmation email (fire and forget)
+    sendOrderConfirmation(orderForEmail)
+      .then(result => !result.success && console.error('Email failed:', result.error))
+      .catch(error => console.error('Email error:', error));
+
+    return { success: true, orderId: orderRef.id };
+  } catch (error) {
+    console.error('Order creation error:', error);
+    return { 
+      success: false, 
+      error: 'Failed to create order',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
 const repaintCost = 20;
 const collectionFee = 10;
 
@@ -53,103 +131,33 @@ const orderSchema = z.object({
   path: ["pickupAddress"]
 });
 
+// API Route handler
 export async function POST(request: Request) {
   if (request.method !== 'POST') {
     return new NextResponse('Method not allowed', { status: 405 });
   }
 
   try {
-    // 1. Parse and validate request body
     const body = await request.json();
-    const validationResult = orderSchema.safeParse(body);
-    
-    if (!validationResult.success) {
+    const result = await createOrder(body);
+
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Validation failed', details: validationResult.error.format() },
+        { error: result.error, details: result.details },
         { status: 400 }
       );
     }
 
-    const validatedData = validationResult.data;
-    const selectedService = services.find(s => s.id === validatedData.serviceId);
-    
-    if (!selectedService) {
-      return NextResponse.json(
-        { error: 'Service not found' },
-        { status: 400 }
-      );
-    }
-
-    // 2. Calculate costs
-    const baseCost = selectedService.price * validatedData.quantity;
-    const repaintCostTotal = validatedData.repaint ? repaintCost * validatedData.quantity : 0;
-    const deliveryCost = validatedData.deliveryMethod === 'collection' ? collectionFee : 0;
-    const totalCost = baseCost + repaintCostTotal + deliveryCost;
-
-    // 3. Normalize phone number
-    const normalizedPhoneNumber = validatedData.phoneNumber.replace(/\D/g, '');
-
-    // 4. Prepare order data
-    const orderData = {
-      ...validatedData,
-      phoneNumber: normalizedPhoneNumber,
-      totalCost,
-      status: 'pending' as const,
-      serviceName: selectedService.name,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    };
-
-    // 5. Save to Firestore
-    const orderRef = await addDoc(collection(db, 'orders'), orderData);
-
-    // 6. Prepare order data for email (with string dates)
-    const orderForEmail: Order = {
-      id: orderRef.id,
-      customerName: validatedData.fullName,
-      service: selectedService.name,
-      date: validatedData.bookingDate,
-      status: 'pending',
-      userEmail: validatedData.email,
-      phoneNumber: normalizedPhoneNumber,
-      totalCost,
-      notes: validatedData.notes,
-      deliveryMethod: validatedData.deliveryMethod,
-      pickupAddress: validatedData.pickupAddress,
-      quantity: validatedData.quantity,
-      repaint: validatedData.repaint,
-      paymentMethod: validatedData.paymentMethod,
-      paymentIntentId: validatedData.paymentIntentId,
-      bookingDate: validatedData.bookingDate,
-      bookingTime: validatedData.bookingTime,
-      serviceName: selectedService.name,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    // 7. Send confirmation email (fire and forget)
-    sendOrderConfirmation(orderForEmail)
-      .then(result => {
-        if (!result.success) {
-          console.error('Failed to send confirmation email:', result.error);
-        }
-      })
-      .catch(error => {
-        console.error('Error in email sending process:', error);
-      });
-
-    // 8. Return success response
     return NextResponse.json(
-      { orderId: orderRef.id },
+      { orderId: result.orderId },
       { status: 201 }
     );
-
   } catch (error) {
-    console.error('Error creating order:', error);
+    console.error('API Error:', error);
     return NextResponse.json(
       { 
-        error: 'Failed to create order', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );
