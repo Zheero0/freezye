@@ -74,7 +74,7 @@ import {
                       <Hr style={hr} />
                       <Heading style={heading}>Thanks for your order, {order.customerName}!</Heading>
                       <Text style={paragraph}>
-                        We've received your order and are getting it ready for you. You can view your order details below.
+                        We&rsquo;ve received your order and are getting it ready for you. You can view your order details below.
                       </Text>
                       
                       <Section style={card} className="card">
@@ -112,7 +112,7 @@ import {
                       </Section>
           
                       <Text style={paragraph}>
-                        We'll notify you again once your order status is updated. If you have any questions, please don't hesitate to contact us.
+                        We&rsquo;ll notify you again once your order status is updated. If you have any questions, please don&rsquo;t hesitate to contact us.
                       </Text>
                       <Hr style={hr} />
                       <Text style={footer}>

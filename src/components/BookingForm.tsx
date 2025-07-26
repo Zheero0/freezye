@@ -211,12 +211,13 @@ function BookingFormContents() {
 
         await removeAvailability(format(data.bookingDate, 'yyyy-MM-dd'), data.bookingTime);
         setIsSubmitted(true);
-    } catch (error: any) {
-        console.error('Error creating order: ', error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        console.error('Error creating order: ', message);
         toast({
             variant: 'destructive',
             title: 'Booking Failed',
-            description: error.message || 'There was an issue creating your booking. Please contact support.',
+            description: message || 'There was an issue creating your booking. Please contact support.',
         });
     } finally {
         setIsProcessing(false);

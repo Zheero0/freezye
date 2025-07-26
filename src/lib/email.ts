@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use server';
 
 import { Resend } from 'resend';
@@ -94,8 +93,9 @@ export async function sendEmail(payload: SendEmailPayload) {
     console.log(`Email type '${type}' sent successfully to ${customerEmail}.`);
     return { success: true };
 
-  } catch (error: any) {
-    console.error(`Failed to send email type '${type}':`, error);
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`Failed to send email type '${type}':`, message);
+    return { success: false, error: message };
   }
 }

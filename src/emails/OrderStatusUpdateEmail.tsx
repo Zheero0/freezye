@@ -29,7 +29,7 @@ import {
   
     const statusMessages: Record<Order['status'], string> = {
         Pending: "Your order is pending and will be processed shortly.",
-        Collected: "We've successfully collected your sneakers! They are now on their way to our facility for their spa day.",
+        Collected: "We&rsquo;ve successfully collected your sneakers! They are now on their way to our facility for their spa day.",
         'In Progress': "The cleaning process has begun! Our experts are meticulously restoring your sneakers.",
         Completed: "Great news! Your sneakers are clean, fresh, and ready for you.",
         Cancelled: "Your order has been cancelled as per your request."
@@ -89,7 +89,7 @@ import {
                                     </Column>
                                 </Row>
                                 <Hr style={hr} />
-                                <Heading style={heading}>Your Order is Now "{newStatus}"</Heading>
+                                <Heading style={heading}>Your Order is Now &quot;{newStatus}&quot;</Heading>
                                 <Text style={paragraph}>
                                     Hi {order.customerName}, we have an update on your order #{order.id.substring(0,7)}.
                                 </Text>
