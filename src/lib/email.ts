@@ -11,6 +11,26 @@ import type { Order } from './types';
 // Force dynamic rendering for all email functions
 export const dynamic = 'force-dynamic';
 
+type EmailType = 'confirmation' | 'statusUpdate';
+
+export async function sendEmail({ type, order, newStatus }: { 
+  type: EmailType; 
+  order: Order; 
+  newStatus?: string;
+}) {
+  switch (type) {
+    case 'confirmation':
+      return await sendOrderConfirmation(order);
+    case 'statusUpdate':
+      if (!newStatus) {
+        throw new Error('newStatus is required for statusUpdate emails');
+      }
+      return await sendOrderStatusUpdate(order, newStatus);
+    default:
+      throw new Error(`Unsupported email type: ${type}`);
+  }
+}
+
 // Environment variable validation
 if (!process.env.RESEND_API_KEY) {
   console.error('RESEND_API_KEY is required in environment variables');
