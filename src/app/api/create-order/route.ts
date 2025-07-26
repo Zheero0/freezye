@@ -9,23 +9,33 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { services } from '@/lib/services';
 import type { Order } from '@/lib/types';
 import { sendOrderConfirmation } from '@/lib/email';
+import { repaintCost, collectionFee, orderSchema, getSelectedService, normalizePhoneNumber } from '@/lib/order-helpers';
 
 // Force dynamic rendering for this route
-export const dynamic = 'force-dynamic';
+// Removed 'export const dynamic = ...' as only async HTTP handlers can be exported in this file.
 
-// Server action for order creation
-export async function createOrder(data: any) {
+// API Route handler
+export async function POST(request: Request) {
+  if (request.method !== 'POST') {
+    return new NextResponse('Method not allowed', { status: 405 });
+  }
+
   try {
-    const validationResult = orderSchema.safeParse(data);
+    const body = await request.json();
+    const validationResult = orderSchema.safeParse(body);
     if (!validationResult.success) {
-      return { success: false, error: 'Validation failed', details: validationResult.error.format() };
+      return NextResponse.json(
+        { error: 'Validation failed', details: validationResult.error.format() },
+        { status: 400 }
+      );
     }
-    
     const validatedData = validationResult.data;
     const selectedService = services.find(s => s.id === validatedData.serviceId);
-    
     if (!selectedService) {
-      return { success: false, error: 'Service not found' };
+      return NextResponse.json(
+        { error: 'Service not found' },
+        { status: 400 }
+      );
     }
 
     // Calculate costs
@@ -50,7 +60,7 @@ export async function createOrder(data: any) {
 
     // Save to Firestore
     const orderRef = await addDoc(collection(db, 'orders'), orderData);
-    
+
     // Prepare order data for email
     const orderForEmail: Order = {
       id: orderRef.id,
@@ -80,59 +90,22 @@ export async function createOrder(data: any) {
       .then(result => !result.success && console.error('Email failed:', result.error))
       .catch(error => console.error('Email error:', error));
 
-    return { success: true, orderId: orderRef.id };
+    return NextResponse.json(
+      { orderId: orderRef.id },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error('Order creation error:', error);
-    return { 
-      success: false, 
-      error: 'Failed to create order',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    };
+    console.error('API Error:', error);
+    return NextResponse.json(
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
   }
 }
 
-const repaintCost = 20;
-const collectionFee = 10;
-
-// Order schema for validation
-const orderSchema = z.object({
-  serviceId: z.string().refine(val => services.some(s => s.id === val), { 
-    message: "Invalid service ID" 
-  }),
-  quantity: z.number().int().min(1),
-  repaint: z.boolean().default(false),
-  deliveryMethod: z.enum(['collection', 'dropoff']),
-  paymentMethod: z.enum(['card', 'cash']),
-  bookingDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { 
-    message: "Invalid date format (YYYY-MM-DD)" 
-  }),
-  bookingTime: z.string().regex(/^\d{2}:\d{2}$/, { 
-    message: "Invalid time format (HH:MM)" 
-  }),
-  fullName: z.string().min(2, { 
-    message: "Full name is required" 
-  }),
-  email: z.string().email({ 
-    message: "Invalid email address" 
-  }),
-  phoneNumber: z.string().min(1, { 
-    message: "Phone number is required" 
-  }),
-  pickupAddress: z.string().optional(),
-  notes: z.string().optional(),
-  paymentIntentId: z.string().optional()
-}).refine(data => {
-  if (data.deliveryMethod === 'dropoff' && !data.pickupAddress?.trim()) {
-    return false;
-  }
-  return true;
-}, {
-  message: "Pickup address is required for dropoff service",
-  path: ["pickupAddress"]
-});
-
-// API Route handler
-export async function POST(request: Request) {
   if (request.method !== 'POST') {
     return new NextResponse('Method not allowed', { status: 405 });
   }
