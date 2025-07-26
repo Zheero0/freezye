@@ -30,13 +30,12 @@ import {
           <style>
             {`
               :root {
-                color-scheme: light dark;
-                supported-color-schemes: light dark;
+                color-scheme: light;
+                supported-color-schemes: light;
               }
-              @media (prefers-color-scheme: dark) {
-                body, table, .main-container, .content-box {
-                  background-color: #0c0a09 !important;
-                }
+              /* Removed explicit dark-mode body background to let email inherit default */
+@media (prefers-color-scheme: dark) {
+                 /* body and outer backgrounds left unset */
                 .card {
                     background-color: #1c1917 !important;
                 }
@@ -62,9 +61,9 @@ import {
                       <Row style={headerRow}>
                         <Column align="left">
                             <Img
-                            src={`${baseUrl}/logo.svg`}
-                            width="48"
-                            height="48"
+                            src={`${baseUrl}/trans-logo.svg`}
+                            width="50"
+                            height="50"
                             alt="SneaksWash Logo"
                             />
                         </Column>
@@ -143,12 +142,12 @@ import {
   export default OrderConfirmationEmail;
   
   const main = {
-    backgroundColor: '#0c0a09',
+    backgroundColor: '#ffffff',
     fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
   };
   
   const container = {
-    backgroundColor: '#0c0a09',
+    backgroundColor: '#ffffff',
     margin: '0 auto',
     padding: '20px 0 48px',
     width: '100%',
@@ -206,7 +205,7 @@ import {
   };
   
   const card = {
-    backgroundColor: '#0c0a09',
+    backgroundColor: '#1c1917',
     borderRadius: '8px',
     padding: '16px',
     border: '1px solid #27272a'

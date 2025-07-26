@@ -26,7 +26,11 @@ export async function POST(request: Request) {
     const { type, order, newStatus } = validation.data;
 
     // Ensure correct typing for order
-    const result = await sendEmail({ type, order: order as Order, newStatus });
+    const result = await sendEmail({
+      type,
+      order: order as Order,
+      newStatus: newStatus as Order['status'],
+    });
 
     if (!result.success) {
       console.error('Email sending failed via API route:', result.error);

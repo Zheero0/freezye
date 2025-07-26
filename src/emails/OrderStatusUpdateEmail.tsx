@@ -78,9 +78,9 @@ import {
                                 <Row style={headerRow}>
                                     <Column align="left">
                                         <Img
-                                        src={`${baseUrl}/logo.svg`}
-                                        width="48"
-                                        height="48"
+                                        src={`${baseUrl}/trans-logo.svg`}
+                                        width="50"
+                                        height="50"
                                         alt="SneaksWash Logo"
                                         />
                                     </Column>
