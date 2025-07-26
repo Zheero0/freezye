@@ -1,4 +1,4 @@
-
+/* eslint-disable react/no-unescaped-entities */
 import {
     Body,
     Container,
@@ -22,7 +22,7 @@ import {
     newStatus: Order['status'];
   }
   
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
+  const _baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
   
   export const OrderStatusUpdateEmail = ({ order, newStatus }: OrderStatusUpdateEmailProps) => {
     const previewText = `Update on your SneaksWash order #${order.id.substring(0,7)}`;
@@ -78,7 +78,7 @@ import {
                                 <Row style={headerRow}>
                                     <Column align="left">
                                         <Img
-                                        src={`${baseUrl}/trans-logo.svg`}
+                                        src={`${_baseUrl}/trans-logo.svg`}
                                         width="50"
                                         height="50"
                                         alt="SneaksWash Logo"
