@@ -122,7 +122,7 @@ export const celebritiesData = [
   },
             {
     id: 8,
-    name: "Sam Mathe",
+    name: "Sam Mather",
     location: 'Manchester United, England',
     role: 'Footballer',
     image: '/Sam.webp',
