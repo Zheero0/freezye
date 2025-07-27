@@ -123,7 +123,8 @@ export function AboutUs() {
               transition={{ type: "spring", stiffness: 300 }}
               className="h-full"
             >
-              <Card className="relative overflow-hidden border  md:w-[800px] border-border group bg-card/80 backdrop-blur-sm hover:shadow-xl hover:shadow-primary/10">
+              <Card  className="relative overflow-hidden border border-border group bg-card/80 backdrop-blur-sm hover:shadow-xl hover:shadow-primary/10 w-[90vw] max-w-md md:max-w-[800px] mx-auto"
+             >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
 
                 <CardContent className="p-0 relative z-10">
@@ -224,7 +225,7 @@ export function AboutUs() {
             </div>
 
             {/* Thumbnail Preview */}
-            <div className="flex justify-center space-x-4 mt-12">
+           <div className="hidden md:flex justify-center space-x-4 mt-12">
               {celebrities.map((celebrity, index) => (
                 <button
                   key={celebrity.name}
