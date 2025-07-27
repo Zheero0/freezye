@@ -1,4 +1,4 @@
-// components/TestimonialsCarousel.tsx
+// src/components/Testimonials.tsx
 'use client';
 
 import * as React from 'react';
@@ -12,13 +12,11 @@ export function Testimonials() {
   const [idx, setIdx] = React.useState(0);
   const total = testimonials.length;
 
-  // auto-advance every 5s
   React.useEffect(() => {
     const h = setInterval(() => setIdx(i => (i + 1) % total), 5000);
     return () => clearInterval(h);
   }, [total]);
 
-  // scroll center on idx change
   React.useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -47,7 +45,7 @@ export function Testimonials() {
         {testimonials.map(({ name, quote }, i) => (
           <motion.div
             key={i}
-            className="snap-center flex-shrink-0 w-96 h-44"
+            className="snap-center flex-shrink-0 w-96 h-52"
             initial={false}
             animate={
               idx === i
@@ -58,8 +56,11 @@ export function Testimonials() {
           >
             <Card className="h-full bg-card/50 backdrop-blur-sm overflow-hidden">
               <CardContent className="p-6 flex flex-col justify-between h-full">
-                <Quote className="h-8 w-8 text-primary/50 mb-4" />
-                <p className="italic text-muted-foreground mb-4 text-base leading-relaxed flex-grow">
+                <Quote
+                  className="flex-none text-primary/50 mb-4"
+                  style={{ width: '2rem', height: '2rem', minWidth: '2rem', minHeight: '2rem' }}
+                />
+                <p className="italic text-muted-foreground mb-4 text-base leading-relaxed">
                   “{quote}”
                 </p>
                 <p className="font-bold text-white text-lg mt-2 text-right">
