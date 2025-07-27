@@ -30,7 +30,7 @@ export function InstagramFeed() {
                     </div> */}
           <h2 className="text-4xl lg:text-6xl font-bold font-headline mb-4 tracking-tighter">
             <span className="text-white">
-              <span className="gradient-text">Fresh From</span>
+              <span className="gradient-text">Fresh From </span>
                The Gram
             </span>
           </h2>
