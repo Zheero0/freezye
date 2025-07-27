@@ -398,7 +398,7 @@ function BookingFormContents() {
                               <div><Label className="text-lg">Email Address</Label><Input type="email" {...form.register('email', { required: true })} /></div>
                               <div><Label className="text-lg">Phone</Label><Input type="tel" {...form.register('phoneNumber', { required: true })} /></div>
                            </div>
-                           {watchedValues.deliveryMethod === 'collection' && (<div><Label className="text-lg">Pickup Address</Label><Textarea {...form.register('pickupAddress', { required: watchedValues.deliveryMethod === 'collection' })} /></div>)}
+                           {watchedValues.deliveryMethod === 'collection' && (<div><Label className="text-lg" >Pickup Address</Label><Textarea placeholder='Address and Postcode' {...form.register('pickupAddress', { required: watchedValues.deliveryMethod === 'collection' })} /></div>)}
                           <div><Label className="text-lg">Additional Notes (Optional)</Label><Textarea placeholder="e.g. specific stains, areas to focus on" {...form.register('notes')} /></div>
                       </div>
                     )}
