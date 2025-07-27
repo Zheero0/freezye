@@ -1,45 +1,49 @@
-import { NextResponse } from 'next/server';
-import { z } from 'zod';
-import { sendEmail } from '@/lib/email';
-import type { Order } from '@/lib/types';
+// app/api/send-email/route.ts (or wherever your POST handler lives)
 
-// Zod schema to validate incoming request payload
-const emailPayloadSchema = z.object({
-  type: z.enum(['confirmation', 'statusUpdate']),
-  order: z.any(), // runtime shape not strictly enforced here
+import { NextResponse } from 'next/server';
+import { z }           from 'zod';
+import { sendEmail }   from '@/lib/email';
+import type { Order }  from '@/lib/types';
+
+// validate incoming JSON
+const schema = z.object({
+  type:      z.enum(['confirmation','statusUpdate']),
+  order:     z.any(),               // narrow if you care
   newStatus: z.string().optional(),
 });
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json();
+  const payload = await request.json();
+  const parsed  = schema.safeParse(payload);
 
-    const validation = emailPayloadSchema.safeParse(body);
-    if (!validation.success) {
-      console.error('Email API Validation Error:', validation.error.flatten());
-      return NextResponse.json(
-        { error: 'Invalid request payload', details: validation.error.flatten() },
-        { status: 400 }
-      );
-    }
-
-    const { type, order, newStatus } = validation.data;
-
-    // Ensure correct typing for order
-    const result = await sendEmail({
-      type,
-      order: order as Order,
-      newStatus: newStatus as Order['status'],
-    });
-
-    if (!result.success) {
-      console.error('Email sending failed via API route:', result.error);
-      return NextResponse.json({ error: result.error }, { status: 500 });
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (error: unknown) {
-    console.error('Unhandled error in send-email API route:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Invalid payload', details: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
+
+  const { type, order, newStatus } = parsed.data;
+
+  // call your helper
+  const result = await sendEmail({
+    type,
+    order:     order as Order,
+    newStatus: newStatus as Order['status']
+  });
+
+  // if sendEmail reports failure, return 500 + the raw resend error
+  if (!result.success) {
+    console.error('Email send failed:', result.error);
+    return NextResponse.json(
+      { success: false, error: result.error, responses: result.responses },
+      { status: 500 }
+    );
+  }
+
+  // otherwise return the full success + response objects
+  return NextResponse.json(
+    { success: true, responses: result.responses },
+    { status: 200 }
+  );
 }

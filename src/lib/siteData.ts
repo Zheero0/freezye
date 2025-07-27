@@ -8,35 +8,27 @@ export const siteStats = {
   conciergeSupport: '24/7',
 };
 
-export const testimonialsData = [
-  {
-    name: 'Rico Lewis',
-    location: 'Manchester',
-    role: 'Footballer',
-    rating: 5,
-    text: 'Absolutely incredible service! My Jordan 1s were completely ruined. Their attention to detail is unmatched.',
-    image: '/rico.webp',
-    verified: true,
-  },
-  {
-    name: 'Nemzzz',
-    location: 'Manchester',
-    role: 'Recording Artist',
-    rating: 5,
-    text: 'My entire sneaker collection gets the VIP treatment. The protection coating is revolutionary.',
-    image: '/nemzzz.webp',
-    verified: true,
-  },
-  {
-    name: 'Zidane Iqbal',
-    location: 'Manchester',
-    role: 'Footballer',
-    rating: 5,
-    text: 'Best luxury sneaker service in the UK! My Louboutin sneakers have never looked better.',
-    image: '/Zidane.webp',
-    verified: true,
-  },
-];
+// src/lib/siteData.ts
+
+export interface Testimonial {
+  name: string
+  quote: string
+}
+
+export const testimonials: Testimonial[] = [
+  { name: 'Nemzzz',            quote: 'My bro patterned me last minute' },
+  { name: 'Shola Shoretire',   quote: 'Top service as always bro👊🏾' },
+  { name: 'Owen Dodgson',      quote: 'You actually brought them back to life aha appreciate it bro' },
+  { name: 'Zidane Iqbal',      quote: 'Appreciate it bro, quick delivery as always 👊' },
+  { name: 'Rico Lewis',        quote: 'Top service thank you bro' },
+  { name: 'Mipo Odubeko',      quote: 'Fresh my bro' },
+  { name: 'Ali Al‑Hamadi',     quote: 'My boy, always got me 👊' },
+  { name: 'Luke Mbete',        quote: 'Great service, appreciate you my boy' },
+  { name: 'Tyrhys Dolan',      quote: 'Sorted me out nicely, appreciate it as always bro' },
+  { name: 'Lisandro Martinez', quote: 'They look brand new' },
+  { name: 'Dire Mebude',       quote: 'I didn’t think you would be able to save them😂appreciate it bro🤞🏾' },
+]
+
 
 export const celebritiesData = [
   {

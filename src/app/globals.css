@@ -1,11 +1,20 @@
+/* ==============================================================
+   Tailwind Directives
+   ============================================================== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==============================================================
+   Global Reset / Defaults
+   ============================================================== */
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* ==============================================================
+   CSS Variables & Dark Mode
+   ============================================================== */
 @layer base {
   :root {
     --background: 0 0% 7%;
@@ -79,6 +88,9 @@ body {
   }
 }
 
+/* ==============================================================
+   Base Layer (utilities on HTML elements)
+   ============================================================== */
 @layer base {
   * {
     @apply border-border;
@@ -88,6 +100,9 @@ body {
   }
 }
 
+/* ==============================================================
+   Utilities
+   ============================================================== */
 @layer utilities {
   .gradient-text {
     @apply text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent;
@@ -133,4 +148,7 @@ body {
   .styled-scrollbar::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground));
   }
+
+
+
 }

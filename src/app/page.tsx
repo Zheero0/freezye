@@ -11,6 +11,7 @@ import { InstagramFeed } from '@/components/InstagramFeed';
 import { Pricing } from '@/components/Pricing';
 import { AboutUs } from '@/components/AboutUs';
 import { motion } from 'framer-motion';
+import { FAQ } from '@/components/FAQ';
 
 
 export default function Home() {
@@ -61,6 +62,12 @@ export default function Home() {
             <Testimonials />
           </motion.div>
           
+
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
+            <FAQ />
+          </motion.div>
+
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
             <InstagramFeed />
           </motion.div>
