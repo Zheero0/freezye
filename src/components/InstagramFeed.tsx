@@ -21,7 +21,7 @@ export function InstagramFeed() {
                         <span className="text-sm text-muted-foreground">Follow Our Journey</span>
                     </div>
                     <h2 className="text-4xl lg:text-6xl font-bold font-headline mb-4 tracking-tighter">
-                        <span className="text-white">Fresh From The Gram</span>
+                        <span className="text-white"><span className="gradient-text">Fresh From</span><br /> The Gram</span>
                     </h2>
                      <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                         See our latest restorations and happy customers.

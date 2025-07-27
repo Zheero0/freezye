@@ -33,7 +33,7 @@ export function Testimonials() {
           <span className="text-white">Connoisseurs</span>
         </h2>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Join thousands of discerning clients who trust us with their most precious footwear
+          Join hundreds of discerning clients who trust us with their most precious footwear
         </p>
       </div>
 
