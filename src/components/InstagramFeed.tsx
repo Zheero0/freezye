@@ -16,10 +16,10 @@ export function InstagramFeed() {
         <section id="instagram" className="py-32 px-4">
             <div className="container mx-auto">
                 <div className="text-center mb-12">
-                    <div className="inline-flex items-center space-x-2 bg-secondary/50 backdrop-blur-sm rounded-full px-6 py-3 border border-border mb-6">
+                    {/* <div className="inline-flex items-center space-x-2 bg-secondary/50 backdrop-blur-sm rounded-full px-6 py-3 border border-border mb-6">
                         <Instagram className="h-4 w-4 text-primary" />
                         <span className="text-sm text-muted-foreground">Follow Our Journey</span>
-                    </div>
+                    </div> */}
                     <h2 className="text-4xl lg:text-6xl font-bold font-headline mb-4 tracking-tighter">
                         <span className="text-white"><span className="gradient-text">Fresh From</span><br /> The Gram</span>
                     </h2>
