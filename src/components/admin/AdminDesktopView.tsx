@@ -103,7 +103,7 @@ export const AdminDesktopView = (props: any) => {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stats.activeOrders}</div>
-                            <p className="text-xs text-muted-foreground">Pending and In Progress</p>
+                            <p className="text-xs text-muted-foreground">Pending Orders</p>
                         </CardContent>
                     </Card>
                     <Card className="bg-card/80 backdrop-blur-sm">
