@@ -74,7 +74,7 @@ export default function Home() {
 
         </main>
 
-        <footer className="py-6 border-t border-border flex items-center justify-center text-center">
+        <footer className="py-6 border-border flex items-center justify-center text-center">
           <div className="container text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} Sneakswash. All Rights Reserved.
           </div>
