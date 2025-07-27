@@ -1,8 +1,8 @@
 export const siteStats = {
-  sneakersCleaned: '500+',
+  sneakersCleaned: '1000+',
   customerRating: '★4.9',
   turnaround: '12h+',
-  premiumRestorations: '500+',
+  premiumRestorations: '1000+',
   clientSatisfaction: '4.9/5',
   insuredService: '100%',
   conciergeSupport: '24/7',
