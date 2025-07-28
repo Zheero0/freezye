@@ -135,7 +135,7 @@ function BookingFormContents() {
       quantity: 1,
       repaint: false,
       deliveryMethod: 'dropoff',
-      paymentMethod: 'card',
+      paymentMethod: 'cash',
       pickupAddress: '',
       notes: '',
       fullName: '',
