@@ -59,7 +59,7 @@ export const celebritiesData = [
     name: 'Shola Shoretire',
     location: 'PAOK, Greece',
     role: 'Footballer',
-    image: '/Shola.webp',
+    image: '/shola.webp',
     rating: 5,
     verified: true,
     specialty: 'Football Boots & Lifestyle',
