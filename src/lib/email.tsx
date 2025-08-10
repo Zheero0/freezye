@@ -27,74 +27,63 @@ interface SendEmailPayload {
 export async function sendEmail(payload: SendEmailPayload) {
   const { type, order, newStatus } = payload;
 
-  if (!type || !order) {
-    console.error('Email Error: Missing type or order data');
-    return { success: false, error: 'Missing type or order data' };
-  }
+  if (!type || !order) return { success: false, error: 'Missing type or order' };
 
   const customerEmail = order.userEmail;
-  if (!customerEmail) {
-    console.error('Email Error: Customer email is missing');
-    return { success: false, error: 'Customer email is missing' };
-  }
+  if (!customerEmail) return { success: false, error: 'Missing customer email' };
 
   const fromAddress = `${fromName} <${fromEmail}>`;
 
   try {
     if (type === 'confirmation') {
-      // Customer email
-      try {
-        console.log('[EMAIL] Sending customer confirmation:', customerEmail);
-        const customerRes = await resend.emails.send({
+      // Fire both sends; succeed only if BOTH succeed.
+      const [cust, admin] = await Promise.allSettled([
+        resend.emails.send({
           from: fromAddress,
           to: customerEmail,
           subject: `Order Confirmed: #${order.id.substring(0, 7)}`,
           react: <OrderConfirmationEmail order={order} />,
-        });
-        console.log('[EMAIL] Customer send result:', customerRes);
-      } catch (err) {
-        console.error('[EMAIL] Failed to send customer confirmation:', err);
-      }
-
-      // Admin email
-      try {
-        console.log('[EMAIL] Sending admin notification:', adminEmail);
-        const adminRes = await resend.emails.send({
+        }),
+        resend.emails.send({
           from: fromAddress,
           to: adminEmail,
           subject: `New Order Received: #${order.id.substring(0, 7)}`,
           react: <AdminOrderNotificationEmail order={order} />,
+        }),
+      ]);
+
+      const customerOk = cust.status === 'fulfilled';
+      const adminOk = admin.status === 'fulfilled';
+
+      if (!customerOk || !adminOk) {
+        console.error('[EMAIL] confirmation failed', {
+          customerOk,
+          adminOk,
+          customerErr: customerOk ? null : (cust as PromiseRejectedResult).reason,
+          adminErr: adminOk ? null : (admin as PromiseRejectedResult).reason,
         });
-        console.log('[EMAIL] Admin send result:', adminRes);
-      } catch (err) {
-        console.error('[EMAIL] Failed to send admin notification:', err);
+        return { success: false, error: 'One or both emails failed to send' };
       }
+
+      return { success: true };
     }
 
     if (type === 'statusUpdate') {
-      if (!newStatus) {
-        console.error('Email Error: Missing newStatus for statusUpdate email');
-        return { success: false, error: 'Missing newStatus for statusUpdate email' };
-      }
+      if (!newStatus) return { success: false, error: 'Missing newStatus' };
 
-      try {
-        console.log('[EMAIL] Sending status update to customer:', customerEmail);
-        const statusRes = await resend.emails.send({
-          from: fromAddress,
-          to: customerEmail,
-          subject: `Order Update: Your order is now ${newStatus}`,
-          react: <OrderStatusUpdateEmail order={order} newStatus={newStatus} />,
-        });
-        console.log('[EMAIL] Status update send result:', statusRes);
-      } catch (err) {
-        console.error('[EMAIL] Failed to send status update:', err);
-      }
+      await resend.emails.send({
+        from: fromAddress,
+        to: customerEmail,
+        subject: `Order Update: Your order is now ${newStatus}`,
+        react: <OrderStatusUpdateEmail order={order} newStatus={newStatus} />,
+      });
+
+      return { success: true };
     }
 
-    console.log(`Email type '${type}' process finished.`);
-    return { success: true };
-  } catch (error: any) {
-    console.error(`Failed to send email type '${type}':`, error);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Invalid email type' };
+  } catch (err: any) {
+    console.error('[EMAIL] send failed:', err);
+    return { success: false, error: err?.message || 'Unknown error' };
   }
 }

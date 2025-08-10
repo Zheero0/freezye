@@ -113,7 +113,7 @@ export async function POST(request: Request) {
 
     // If your sendEmail returns detailed results (customer/admin),
     // prefer that. Otherwise this fallback uses success boolean.
-    const ok = emailResult?.success !== false;
+const ok = emailResult.success === true;
 
     return NextResponse.json(
       { success: ok, message: 'Order created', email: emailResult },
