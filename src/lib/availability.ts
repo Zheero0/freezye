@@ -64,7 +64,7 @@ export const getAvailableDates = async (): Promise<Date[]> => {
                     // The doc.id is the date string 'yyyy-MM-dd'
                     const date = parseISO(doc.id); 
                     dates.push(date);
-                } catch (_e) {
+                } catch (e) {
                     console.error(`Invalid date format for doc id: ${doc.id}`);
                 }
             }

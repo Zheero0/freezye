@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -29,9 +30,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
     });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Stripe Error:', message);
-    return NextResponse.json({ error: message }, { status: 500 });
+  } catch (error: any) {
+    console.error('Stripe Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

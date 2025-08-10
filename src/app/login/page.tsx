@@ -19,7 +19,7 @@ export default function LoginPage() {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
 
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState('admin@sneakswash.com');
   const [password, setPassword] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -77,9 +77,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative z-10 flex flex-col items-center justify-center min-h-screen bg-background p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
       <div className="mb-8 flex items-center space-x-2 text-primary">
-          <Image src="/trans-logo.svg" alt="Sneakswash Logo" width={50} height={50} />
+          <Image src="/logo.svg" alt="Sneakswash Logo" width={32} height={32} />
       </div>
       <Card className="w-full max-w-sm">
         <form onSubmit={handleLogin}>
@@ -90,7 +90,7 @@ export default function LoginPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email"  required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
+              <Input id="email" type="email" placeholder="admin@sneakswash.com" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>

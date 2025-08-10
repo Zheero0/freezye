@@ -13,7 +13,7 @@ export function Testimonials() {
   const total = testimonials.length;
 
   React.useEffect(() => {
-    const h = setInterval(() => setIdx(i => (i + 1) % total), 5000);
+    const h = setInterval(() => setIdx(i => (i + 1) % total), 2000);
     return () => clearInterval(h);
   }, [total]);
 

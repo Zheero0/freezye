@@ -14,9 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import type { Order } from "@/lib/types"
 import { ArrowLeft, Edit, Loader2, User, Mail, Phone, Package, PoundSterling, Truck, Home, Wallet } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-// We no longer import sendEmail directly in the client component.
-// Status-update emails are dispatched via the server-side API route
-// at /api/send-email to avoid mixing server code in the client bundle.
+import { sendEmail } from "@/lib/email"
 
 const getStatusVariant = (status: Order["status"]) => {
   switch (status) {
@@ -83,24 +81,18 @@ export default function OrderDetailPage() {
             status: newStatus,
         });
 
-        // Fire-and-forget email sending via serverless API route
-        fetch('/api/send-email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                type: 'statusUpdate',
-                order: { ...order, status: newStatus },
-                newStatus,
-            }),
-        }).catch((emailError) => {
-            console.error('Failed to send status update email:', emailError);
+        // Fire-and-forget email sending
+        sendEmail({
+            type: 'statusUpdate',
+            order: { ...order, status: newStatus },
+            newStatus: newStatus,
+        }).catch(emailError => {
+            console.error("Failed to send status update email:", emailError);
+            // Optionally show a non-blocking toast notification for email failure
             toast({
-                variant: 'destructive',
-                title: 'Email Notification Failed',
-                description:
-                    'The order status was updated, but the email notification could not be sent.',
+                variant: "destructive",
+                title: "Email Notification Failed",
+                description: "The order status was updated, but the email notification could not be sent.",
             });
         });
         
@@ -156,7 +148,7 @@ export default function OrderDetailPage() {
   }
 
   return (
-    <div className="relative z-10 flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-1 p-4 md:p-8">
         <div className="max-w-4xl mx-auto">

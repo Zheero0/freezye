@@ -22,11 +22,6 @@ const nextConfig: NextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@react-email/render'],
   },
-  env: {
-    NEXT_PUBLIC_BASE_URL: process.env.NODE_ENV === 'development'
-      ? 'http://localhost:9002'
-      : 'https://<your-production-url>.com', // Replace with your actual production URL
-  },
 };
 
 export default nextConfig;

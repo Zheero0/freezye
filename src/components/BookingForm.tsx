@@ -135,7 +135,7 @@ function BookingFormContents() {
       quantity: 1,
       repaint: false,
       deliveryMethod: 'dropoff',
-      paymentMethod: 'cash',
+      paymentMethod: 'card',
       pickupAddress: '',
       notes: '',
       fullName: '',
@@ -211,13 +211,12 @@ function BookingFormContents() {
 
         await removeAvailability(format(data.bookingDate, 'yyyy-MM-dd'), data.bookingTime);
         setIsSubmitted(true);
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        console.error('Error creating order: ', message);
+    } catch (error: any) {
+        console.error('Error creating order: ', error);
         toast({
             variant: 'destructive',
             title: 'Booking Failed',
-            description: message || 'There was an issue creating your booking. Please contact support.',
+            description: error.message || 'There was an issue creating your booking. Please contact support.',
         });
     } finally {
         setIsProcessing(false);
@@ -398,7 +397,7 @@ function BookingFormContents() {
                               <div><Label className="text-lg">Email Address</Label><Input type="email" {...form.register('email', { required: true })} /></div>
                               <div><Label className="text-lg">Phone</Label><Input type="tel" {...form.register('phoneNumber', { required: true })} /></div>
                            </div>
-                           {watchedValues.deliveryMethod === 'collection' && (<div><Label className="text-lg" >Pickup Address</Label><Textarea placeholder='Address and Postcode' {...form.register('pickupAddress', { required: watchedValues.deliveryMethod === 'collection' })} /></div>)}
+                           {watchedValues.deliveryMethod === 'collection' && (<div><Label className="text-lg">Pickup Address</Label><Textarea {...form.register('pickupAddress', { required: watchedValues.deliveryMethod === 'collection' })} /></div>)}
                           <div><Label className="text-lg">Additional Notes (Optional)</Label><Textarea placeholder="e.g. specific stains, areas to focus on" {...form.register('notes')} /></div>
                       </div>
                     )}

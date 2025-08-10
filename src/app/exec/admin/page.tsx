@@ -73,7 +73,7 @@ export default function AdminPage() {
   }, [selectedDate]);
 
   const filteredAndSortedOrders = useMemo(() => {
-    const filtered = orders.filter(order =>
+    let filtered = orders.filter(order =>
       (order.customerName || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 

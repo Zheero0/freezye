@@ -1,151 +1,129 @@
-// src/app/api/create-order/route.ts
-// @ts-nocheck — bypassing TS for server logic
-'use server';
 
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { services } from '@/lib/services';
 import type { Order } from '@/lib/types';
 import { sendEmail } from '@/lib/email';
-import {
-  repaintCost,
-  collectionFee,
-  orderSchema,
-  getSelectedService,
-  normalizePhoneNumber,
-} from '@/lib/order-helpers';
+
+const repaintCost = 20;
+const collectionFee = 10;
+
+// A new, self-contained Zod schema for server-side validation.
+// This is the single source of truth for what constitutes a valid order.
+const orderSchema = z.object({
+  serviceId: z.string().refine(val => services.some(s => s.id === val), { message: "Invalid service ID" }),
+  quantity: z.number().int().min(1),
+  repaint: z.boolean().default(false),
+  deliveryMethod: z.enum(['collection', 'dropoff']),
+  paymentMethod: z.enum(['card', 'cash']),
+  bookingDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Invalid date format" }),
+  bookingTime: z.string().regex(/^\d{2}:\d{2}$/, { message: "Invalid time format" }),
+  fullName: z.string().min(2, { message: "Full name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  phoneNumber: z.string().min(1, { message: "Phone number is required" }),
+  pickupAddress: z.string().optional(),
+  notes: z.string().optional(),
+  paymentIntentId: z.string().optional(),
+}).refine(data => {
+    if (data.deliveryMethod === 'collection') {
+        return !!data.pickupAddress && data.pickupAddress.length >= 10;
+    }
+    return true;
+}, {
+    message: 'A valid pickup address is required for collection.',
+    path: ['pickupAddress'],
+}).refine(data => {
+    if (data.paymentMethod === 'card') {
+        return !!data.paymentIntentId;
+    }
+    return true;
+}, {
+    message: 'A valid paymentIntentId is required for card payments.',
+    path: ['paymentIntentId'],
+});
+
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    //
-    // 1) Remap your form field names into what Zod expects
-    //
-    const mappedBody = {
-      ...body,
-      name:         body.fullName,      // Zod: `name`
-      email:        body.email,         // Zod: `email`
-      deliveryDate: body.bookingDate,   // Zod: `deliveryDate`
-      deliveryTime: body.bookingTime,   // Zod: `deliveryTime`
-      address:      body.pickupAddress, // Zod: `address`
-    };
-
-    //
-    // 2) Validate against your Zod schema
-    //
-    const parsed = orderSchema.safeParse(mappedBody);
-    if (!parsed.success) {
-      console.error('🛑 Validation failed:', parsed.error.format());
-      return NextResponse.json(
-        { error: 'Validation failed', details: parsed.error.format() },
-        { status: 400 }
-      );
-    }
-    const data = parsed.data;
-
-    //
-    // 3) Lookup the chosen service
-    //
-    const svc = getSelectedService(data.serviceId);
-    if (!svc) {
-      return NextResponse.json({ error: 'Service not found' }, { status: 400 });
+    // 1. Rigorous server-side validation with our new schema
+    const validationResult = orderSchema.safeParse(body);
+    if (!validationResult.success) {
+      console.error('Validation Error:', validationResult.error.flatten());
+      return NextResponse.json({ error: 'Invalid data provided.', details: validationResult.error.flatten() }, { status: 400 });
     }
 
-    //
-    // 4) Calculate costs
-    //
-    const baseCost   = svc.price * data.quantity;
-    const repaintTot = data.repaint ? repaintCost * data.quantity : 0;
-    const delivery   = data.deliveryMethod === 'collection' ? collectionFee : 0;
-    const totalCost  = baseCost + repaintTot + delivery;
+    const validatedData = validationResult.data;
 
-    //
-    // 5) Normalize phone number
-    //
-    const phone = normalizePhoneNumber(data.phoneNumber);
+    // Normalize phone number: add leading '0' if it's missing.
+    let normalizedPhoneNumber = validatedData.phoneNumber;
+    if (normalizedPhoneNumber && !/^\s*(0|\+44)/.test(normalizedPhoneNumber)) {
+        normalizedPhoneNumber = '0' + normalizedPhoneNumber.trim();
+    }
 
-    //
-    // 6) Build the Firestore document
-    //
-    const orderData = {
-      fullName:        data.name,
-      email:           data.email,
-      phoneNumber:     phone,
+    // 2. Server-side price calculation to prevent tampering
+    const selectedService = services.find(s => s.id === validatedData.serviceId);
+    if (!selectedService) {
+      // This case is technically covered by the schema refine, but good to have
+      return NextResponse.json({ error: 'Invalid service selected.' }, { status: 400 });
+    }
 
-      serviceId:       data.serviceId,
-      serviceName:     svc.name,
-      quantity:        data.quantity,
-      repaint:         data.repaint,
+    const subtotal = selectedService.price * validatedData.quantity;
+    const repaintTotal = validatedData.repaint ? repaintCost * validatedData.quantity : 0;
+    const deliveryFee = validatedData.deliveryMethod === 'collection' ? collectionFee : 0;
+    const totalCost = subtotal + repaintTotal + deliveryFee;
 
-      deliveryMethod:  data.deliveryMethod,
-      bookingDate:     data.deliveryDate,
-      bookingTime:     data.deliveryTime,
-      pickupAddress:   data.address?.trim() ? data.address : 'N/A',
-
-      notes:            data.notes ?? '',
-      paymentMethod:    data.paymentMethod ?? 'card',
-      paymentIntentId:  data.paymentIntentId ?? null,
-
+    // 3. Prepare the final data object for Firestore, using only validated data
+    const finalOrderData = {
+      ...validatedData,
+      phoneNumber: normalizedPhoneNumber,
       totalCost,
-      status:           data.status ?? 'pending',
-
-      createdAt:       serverTimestamp(),
-      updatedAt:       serverTimestamp(),
+      status: 'Pending' as const,
+      serviceName: selectedService.name,
+      createdAt: serverTimestamp(),
     };
 
-    //
-    // 7) Persist to Firestore
-    //
-    const docRef = await addDoc(collection(db, 'orders'), orderData);
+    // 4. Securely add the document to Firestore
+    const docRef = await addDoc(collection(db, 'orders'), finalOrderData);
 
-    //
-    // 8) Prepare the payload for the confirmation email
-    //
-    const emailOrder: Order = {
-      id:             docRef.id,
-      customerName:   data.name,
-      userEmail:      data.email,
-      phoneNumber:    phone,
-      service:        svc.name,
-      date:           data.deliveryDate,
-      bookingTime:    data.deliveryTime,   // ← make sure we include this
-      status:         'Pending',
-      totalCost,
-      notes:          data.notes ?? '',
-      deliveryMethod: data.deliveryMethod,
-      pickupAddress:  data.address?.trim() ? data.address : '',
-      quantity:       data.quantity,
-      repaint:        data.repaint,
-      paymentMethod:  data.paymentMethod ?? 'card',
-      paymentIntentId:data.paymentIntentId ?? undefined,
-      createdAt:      new Date(),          // client‑side for email
+    // 5. Construct the full order object for the email, including the newly generated ID
+    const newOrderForEmail: Order = {
+        id: docRef.id,
+        customerName: finalOrderData.fullName,
+        service: finalOrderData.serviceName,
+        date: finalOrderData.bookingDate,
+        status: finalOrderData.status,
+        userEmail: finalOrderData.email,
+        phoneNumber: finalOrderData.phoneNumber,
+        totalCost: finalOrderData.totalCost,
+        notes: finalOrderData.notes,
+        deliveryMethod: finalOrderData.deliveryMethod,
+        pickupAddress: finalOrderData.pickupAddress,
+        quantity: finalOrderData.quantity,
+        repaint: finalOrderData.repaint,
+        paymentMethod: finalOrderData.paymentMethod,
+        paymentIntentId: finalOrderData.paymentIntentId,
+        // createdAt will be a server timestamp, which is fine to omit for the email
     };
+    
+    // 6. Send confirmation email directly (fire-and-forget)
+    sendEmail({
+        type: 'confirmation',
+        order: newOrderForEmail,
+    }).catch(emailError => {
+        // Log email sending errors but don't fail the entire request
+        console.error("Failed to send confirmation email:", emailError);
+    });
 
-    //
-    // 9) Send confirmation email (fire‑and‑forget)
-    //
-    sendEmail({ type: 'confirmation', order: emailOrder })
-      .then(res => {
-        if (!res.success) console.error('Email failed:', res.error);
-      })
-      .catch(err => console.error('Email error:', err));
 
-    //
-    // 10) Return the new order ID
-    //
-    return NextResponse.json(
-      { orderId: docRef.id },
-      { status: 201 }
-    );
-  } catch (err: unknown) {
-    console.error('❌ Create-order error:', err);
-    return NextResponse.json(
-      {
-        error:   'Internal server error',
-        details: err instanceof Error ? err.message : String(err),
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: true, message: 'Order created successfully' });
+
+  } catch (error: any) {
+    console.error('Error creating order:', error);
+    // Generic error to avoid leaking implementation details
+    return NextResponse.json({ error: 'An internal error occurred. Please try again.' }, { status: 500 });
   }
 }
