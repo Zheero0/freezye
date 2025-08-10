@@ -23,7 +23,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+
           <div className="absolute left-1/2 top-0 h-[100vh] w-[100vw] -translate-x-1/2 bg-[radial-gradient(circle_50%_50%_at_50%_50%,#8EACFF33,transparent)] backdrop-blur-[2px]"></div>
           <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
             <div className="absolute -left-40 top-1/4 w-[400px] h-[400px] bg-primary/30 rounded-full blur-3xl opacity-20 animate-pulse"></div>
