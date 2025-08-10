@@ -64,7 +64,7 @@ export function Header() {
     >
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
-          <Image src="/logo.svg" alt="Sneakswash Logo" width={28} height={28} className="text-primary" />
+          <Image src="/trans-logo.svg" alt="Sneakswash Logo" width={28} height={28} className="text-primary" />
         </Link>
         
         {!isAdminPage && (
