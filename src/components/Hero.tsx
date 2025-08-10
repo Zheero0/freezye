@@ -87,12 +87,12 @@ export function Hero() {
               </Button>
               <Button
                 size="lg"
-                className="hidden md:flex font-semibold hover-lift glow-effect group"
+                className=" font-semibold hover-lift glow-effect group"
                 asChild
                 variant="outline"
               >
-                <Link href="#services">
-                  Learn more
+                <Link href="#services" className="flex items-center gap-2">
+                  Learn more <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
             </motion.div>
