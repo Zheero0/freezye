@@ -26,11 +26,11 @@ export default function RootLayout({
 
           <div className="absolute left-1/2 top-0 h-[100vh] w-[100vw] -translate-x-1/2 bg-[radial-gradient(circle_50%_50%_at_50%_50%,#8EACFF33,transparent)] backdrop-blur-[2px]"></div>
           <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
-            <div className="absolute -left-40 top-1/4 w-[400px] h-[400px] bg-primary/30 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-            <div className="absolute -right-40 bottom-1/4 w-[400px] h-[400px] bg-accent/30 rounded-full blur-3xl opacity-20 animate-pulse delay-1000"></div>
+            <div className="absolute -left-40 top-1/4 w-[300px] h-[300px] bg-primary/30 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+            <div className="absolute -right-40 bottom-1/4 w-[300px] h-[300px] bg-accent/30 rounded-full blur-3xl opacity-20 animate-pulse delay-1000"></div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl animate-spin-slow"></div>
-            <div className="absolute top-[80%] left-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-3xl opacity-10 animate-pulse delay-500"></div>
-            <div className="absolute top-[120%] right-[5%] w-[250px] h-[250px] bg-accent/20 rounded-full blur-3xl opacity-10 animate-pulse delay-1500"></div>
+            <div className="absolute top-[80%] left-[10%] w-[200px] h-[200px] bg-primary/20 rounded-full blur-3xl opacity-10 animate-pulse delay-500"></div>
+            <div className="absolute top-[120%] right-[5%] w-[150px] h-[150px] bg-accent/20 rounded-full blur-3xl opacity-10 animate-pulse delay-1500"></div>
           </div>
         </div>
         <AuthProvider>
