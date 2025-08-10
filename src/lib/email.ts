@@ -60,7 +60,7 @@ export async function sendEmail(payload: SendEmailPayload) {
           from: fromAddress,
           to: adminEmail,
           subject: `New Order Received: #${order.id.substring(0, 7)}`,
-          html: render(AdminOrderNotificationEmail({ order })),
+          html: await render(AdminOrderNotificationEmail({ order })),
         });
 
         break;
@@ -71,7 +71,7 @@ export async function sendEmail(payload: SendEmailPayload) {
             return { success: false, error: 'Missing newStatus for statusUpdate email' };
         }
         subject = `Order Update: Your order is now ${newStatus}`;
-        emailHtml = render(OrderStatusUpdateEmail({ order, newStatus }));
+        emailHtml = await render(OrderStatusUpdateEmail({ order, newStatus }));
 
         // Send to customer
         await resend.emails.send({

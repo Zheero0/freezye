@@ -128,7 +128,7 @@ export function Hero() {
 
           <motion.div
             className="relative mt-12 lg:mt-0 w-full max-w-md"
-            variants={imageVariants}
+            
             initial="initial"
             animate="animate"
           >
