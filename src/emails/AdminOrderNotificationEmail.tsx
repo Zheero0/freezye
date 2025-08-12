@@ -63,7 +63,7 @@ import {
                       <Row style={headerRow}>
                         <Column align="left">
                             <Img
-                            src={`${baseUrl}/trans-logo.svg`}
+                            src={`${baseUrl}/trans-logo.png`}
                             width="48"
                             height="48"
                             alt="SneaksWash Logo"
@@ -75,7 +75,7 @@ import {
                       </Row>
                       <Hr style={hr} />
                       <Heading style={heading}>New Order Received!</Heading>
-                      <Text style={paragraph}>
+                      <Text style={paragraph} className='text-left'>
                         A new order has been placed by {order.customerName}. You can view the full order details in the admin dashboard.
                       </Text>
                       
@@ -117,6 +117,12 @@ import {
                             <Row style={itemRow}>
                                 <Column style={itemTitle}>Collection Address:</Column>
                                 <Column style={itemValue} align="right">{order.pickupAddress}</Column>
+                            </Row>
+                         )}
+                         {order.paymentMethod && (
+                            <Row style={itemRow}>
+                                <Column style={itemTitle}>Payment Method:</Column>
+                                <Column style={{...itemValue, textTransform: 'capitalize'}} align="right">{order.paymentMethod}</Column>
                             </Row>
                          )}
                         <Hr style={hr} />

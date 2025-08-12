@@ -79,7 +79,7 @@ import {
                                 <Row style={headerRow}>
                                     <Column align="left">
                                         <Img
-                                        src={`${baseUrl}/trans-logo.svg`}
+                                        src={`${baseUrl}/trans-logo.png`}
                                         width="48"
                                         height="48"
                                         alt="SneaksWash Logo"
@@ -90,7 +90,7 @@ import {
                                     </Column>
                                 </Row>
                                 <Hr style={hr} />
-                                <Heading style={heading}>Your Order is Now "{newStatus}"</Heading>
+                                <Heading style={heading} className='text-left'>Your Order is Now "{newStatus}"</Heading>
                                 <Text style={paragraph}>
                                     Hi {order.customerName}, we have an update on your order #{order.id.substring(0,7)}.
                                 </Text>

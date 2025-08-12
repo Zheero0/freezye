@@ -63,7 +63,7 @@ import {
                       <Row style={headerRow}>
                         <Column align="left">
                             <Img
-                            src={`${baseUrl}/trans-logo.svg`}
+                            src={`${baseUrl}/trans-logo.png`}
                             width="48"
                             height="48"
                             alt="SneaksWash Logo"
@@ -75,8 +75,8 @@ import {
                       </Row>
                       <Hr style={hr} />
                       <Heading style={heading}>Thanks for your order, {order.customerName}!</Heading>
-                      <Text style={paragraph}>
-                        We've received your order and are getting it ready for you. You can view your order details below.
+                      <Text style={paragraph} className='text-left'>
+                        We've received your order and are ready to give your sneakers a facelift. You can view your order details below.
                       </Text>
                       
                       <Section style={card} className="card">
