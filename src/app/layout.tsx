@@ -7,8 +7,8 @@ export const metadata = {
   title: "SneaksWash",
   description: "Professional sneaker cleaning for enthusiasts who care.",
   icons: {
-    icon: "/icon_logo_v3.png?v=3",
-    apple: "/icon_logo_v3.png?v=3",
+    icon: "/icon_logo.png",
+    apple: "/icon_logo.png",
   },
 };
 
