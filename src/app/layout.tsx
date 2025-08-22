@@ -3,14 +3,15 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from '@/context/AuthContext';
 
-export const metadata: Metadata = {
-  title: 'SneaksWash',
-  description: 'Professional sneaker cleaning for enthusiasts who care.',
-    icons: {
-    icon: "/icon_logo.png",        // PNG works fine
-    apple: "/icon_logo.png",       // iOS home screen
+export const metadata = {
+  title: "SneaksWash",
+  description: "Professional sneaker cleaning for enthusiasts who care.",
+  icons: {
+    icon: "/icon_logo_v3.png?v=3",
+    apple: "/icon_logo_v3.png?v=3",
   },
 };
+
 
 export default function RootLayout({
   children,
