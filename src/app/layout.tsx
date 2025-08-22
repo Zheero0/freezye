@@ -6,6 +6,10 @@ import { AuthProvider } from '@/context/AuthContext';
 export const metadata: Metadata = {
   title: 'SneaksWash',
   description: 'Professional sneaker cleaning for enthusiasts who care.',
+    icons: {
+    icon: "/logo.png",        // PNG works fine
+    apple: "/logo.png",       // iOS home screen
+  },
 };
 
 export default function RootLayout({
