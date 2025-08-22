@@ -64,8 +64,8 @@ import {
                         <Column align="left">
                             <Img
                             src={`${baseUrl}/logo.png`}
-                            width="48"
-                            height="48"
+                            width="58"
+                            height="58"
                             alt="SneaksWash Logo"
                             />
                         </Column>
