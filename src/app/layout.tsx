@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   title: 'SneaksWash',
   description: 'Professional sneaker cleaning for enthusiasts who care.',
     icons: {
-    icon: "/logo.png",        // PNG works fine
-    apple: "/logo.png",       // iOS home screen
+    icon: "/icon_logo.png",        // PNG works fine
+    apple: "/icon_logo.png",       // iOS home screen
   },
 };
 
