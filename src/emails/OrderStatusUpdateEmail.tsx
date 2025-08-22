@@ -32,6 +32,7 @@ import {
         Pending: "Your order is pending and will be processed shortly.",
         Collected: "We've successfully collected your sneakers! They are now on their way to our facility for their spa day.",
         'In Progress': "The cleaning process has begun! Our experts are meticulously restoring your sneakers.",
+        'Ready for Collection': "Good news! Your sneakers are now ready for collection. You can pick them up from our Trafford Park location at your convenience.",
         Completed: "Great news! Your sneakers are clean, fresh, and ready for you.",
         Cancelled: "Your order has been cancelled as per your request."
     }
@@ -79,7 +80,7 @@ import {
                                 <Row style={headerRow}>
                                     <Column align="left">
                                         <Img
-                                        src={`${baseUrl}/trans-logo.png`}
+                                        src={`${baseUrl}/logo.png`}
                                         width="48"
                                         height="48"
                                         alt="SneaksWash Logo"

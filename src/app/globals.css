@@ -133,4 +133,7 @@ body {
   .styled-scrollbar::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground));
   }
+  .hover-letter-spacing {
+    @apply transition-all duration-300 hover:tracking-wider;
+  }
 }

@@ -1,36 +1,40 @@
 
-import { db } from '../lib/firebase';
+'use server';
+import { db } from '@/lib/firebase';
 import { collection, doc, setDoc } from 'firebase/firestore';
-import { startOfMonth, endOfMonth, eachDayOfInterval, getDay, format } from 'date-fns';
+import { addDays, eachDayOfInterval, getDay, format } from 'date-fns';
 
 const availabilityCollection = collection(db, 'availability');
 
 /**
- * Populates the availability for the current month.
- * Monday-Saturday: 8am-6pm (hourly)
- * Sunday: 10am-4pm (hourly)
+ * Populates the availability for the next 90 days from today.
+ * Monday-Saturday: 8am-6pm (30-min intervals)
+ * Sunday: 10am-4pm (30-min intervals)
  */
-async function populateMonth() {
-  const now = new Date();
-  const start = startOfMonth(now);
-  const end = endOfMonth(now);
-  const daysInMonth = eachDayOfInterval({ start, end });
+async function populateNext90Days() {
+  const today = new Date();
+  const ninetyDaysFromNow = addDays(today, 90);
+  const dateInterval = eachDayOfInterval({ start: today, end: ninetyDaysFromNow });
 
-  console.log(`Populating availability for ${format(now, 'MMMM yyyy')}...`);
+  console.log(`Populating availability for the next 90 days...`);
 
-  const promises = daysInMonth.map(async (day) => {
+  const promises = dateInterval.map(async (day) => {
     const dayOfWeek = getDay(day); // Sunday = 0, Monday = 1, etc.
     const dateString = format(day, 'yyyy-MM-dd');
     let slots: string[] = [];
 
     if (dayOfWeek >= 1 && dayOfWeek <= 6) { // Monday to Saturday
-      for (let hour = 8; hour <= 18; hour++) {
+      for (let hour = 8; hour < 18; hour++) {
         slots.push(`${String(hour).padStart(2, '0')}:00`);
+        slots.push(`${String(hour).padStart(2, '0')}:30`);
       }
+      slots.push('18:00');
     } else { // Sunday
-      for (let hour = 10; hour <= 16; hour++) {
+      for (let hour = 10; hour < 16; hour++) {
         slots.push(`${String(hour).padStart(2, '0')}:00`);
+        slots.push(`${String(hour).padStart(2, '0')}:30`);
       }
+      slots.push('16:00');
     }
 
     try {
@@ -43,11 +47,12 @@ async function populateMonth() {
   });
 
   await Promise.all(promises);
-  console.log('Finished populating availability for the month.');
+  console.log('Finished populating availability.');
 }
 
-populateMonth().then(() => {
-  process.exit(0);
+populateNext90Days().then(() => {
+  console.log("Script finished. Exiting process.");
+  setTimeout(() => process.exit(0), 2000); // Allow time for logs to flush
 }).catch((error) => {
   console.error('An unexpected error occurred:', error);
   process.exit(1);

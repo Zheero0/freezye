@@ -63,7 +63,7 @@ import {
                       <Row style={headerRow}>
                         <Column align="left">
                             <Img
-                            src={`${baseUrl}/trans-logo.png`}
+                            src={`${baseUrl}/logo.png`}
                             width="48"
                             height="48"
                             alt="SneaksWash Logo"

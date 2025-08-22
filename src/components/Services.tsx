@@ -22,11 +22,11 @@ const services = [
     icon: Truck,
     title: "Collection & Delivery",
     description: "Convenient pickup and delivery service across the UK.",
-    features: ["Fast collection", "Insured transport", "Real-time tracking", "Flexible scheduling"],
+    features: ["Free collection", "Insured transport", "Real-time tracking", "Flexible scheduling"],
   },
   {
     icon: Clock,
-    title: "Express Services",
+    title: "Express Service",
     description: "Need them back quickly? Our same day service delivers within 24 hours.",
     features: ["24-hour turnaround", "Priority handling", "Same-day collection", "Rush delivery"],
   },

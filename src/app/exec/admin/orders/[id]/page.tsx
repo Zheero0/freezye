@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import type { Order } from "@/lib/types"
-import { ArrowLeft, Edit, Loader2, User, Mail, Phone, Package, PoundSterling, Truck, Home, Wallet } from "lucide-react"
+import { ArrowLeft, Edit, Loader2, User, Mail, Phone, Package, PoundSterling, Truck, Home, Wallet, Store } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { sendEmail } from "@/lib/email"
 
@@ -21,6 +21,7 @@ const getStatusVariant = (status: Order["status"]) => {
     case "Pending": return "default"
     case "Collected": return "secondary"
     case "In Progress": return "secondary"
+    case "Ready for Collection": return "outline"
     case "Completed": return "outline"
     case "Cancelled": return "destructive"
     default: return "default"
@@ -261,7 +262,7 @@ export default function OrderDetailPage() {
                   >
                     Pending
                   </Button>
-                   {order.deliveryMethod === 'dropoff' && (
+                   {order.deliveryMethod === 'collection' && (
                      <Button
                       variant={order.status === "Collected" ? "default" : "outline"}
                       onClick={() => handleUpdateStatus("Collected")}
@@ -279,6 +280,16 @@ export default function OrderDetailPage() {
                   >
                     In Progress
                   </Button>
+                  {order.deliveryMethod === 'dropoff' && (
+                     <Button
+                      variant={order.status === "Ready for Collection" ? "default" : "outline"}
+                      onClick={() => handleUpdateStatus("Ready for Collection")}
+                       className="w-full justify-start bg-teal-500/20 border-teal-500 text-teal-600 hover:bg-teal-500/30 dark:text-teal-400"
+                       disabled={order.status === "Ready for Collection"}
+                    >
+                      Ready
+                    </Button>
+                   )}
                   <Button
                     variant={order.status === "Completed" ? "default" : "outline"}
                     onClick={() => handleUpdateStatus("Completed")}

@@ -69,7 +69,7 @@ export function AboutUs() {
         <div className="text-center mb-20">
 
           <h2 className="text-4xl lg:text-5xl font-bold font-headline mb-6 tracking-tighter">
-            <span className="text-foreground">Where </span>
+            <span className="text-foreground">Where</span>
             <br />
             <span className="gradient-text">Legends Trust</span>
           </h2>

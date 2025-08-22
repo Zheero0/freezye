@@ -64,7 +64,7 @@ export function Header() {
     >
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
-          <Image src="/trans-logo.svg" alt="Sneakswash Logo" width={55} height={55} className="text-primary" />
+          <Image src="/logo.png" alt="Sneakswash Logo" width={110} height={110} className="text-primary" />
         </Link>
         
         {!isAdminPage && (
@@ -108,7 +108,7 @@ export function Header() {
                             <SheetHeader className="p-4 border-b border-border text-left">
                               <SheetTitle>
                                 <Link href="/" className="flex items-center space-x-2" onClick={() => setMobileMenuOpen(false)}>
-                                    <Image src="/trans-logo.svg" alt="Sneakswash Logo" width={55} height={55} className="text-primary" />
+                                    <Image src="/logo.svg" alt="Sneakswash Logo" width={28} height={28} className="text-primary" />
                                 </Link>
                               </SheetTitle>
                             </SheetHeader>

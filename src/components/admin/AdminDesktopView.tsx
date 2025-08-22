@@ -25,6 +25,7 @@ const getStatusVariant = (status: Order["status"]) => {
     case "Pending": return "default"
     case "Collected": return "secondary"
     case "In Progress": return "secondary"
+    case "Ready for Collection": return "outline"
     case "Completed": return "outline"
     case "Cancelled": return "destructive"
     default: return "default"

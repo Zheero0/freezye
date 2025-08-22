@@ -1,3 +1,4 @@
+
 export type ServiceSelection = 'standard' | 'express' | 'sameday';
 
 export interface Service {
@@ -15,7 +16,7 @@ export interface WashPack {
   bestValue?: boolean;
 }
 
-export type OrderStatus = 'Pending' | 'Collected' | 'In Progress' | 'Completed' | 'Cancelled';
+export type OrderStatus = 'Pending' | 'Collected' | 'In Progress' | 'Completed' | 'Cancelled' | 'Ready for Collection';
 
 export interface Order {
   id: string;
@@ -61,4 +62,3 @@ export interface Booking {
     
 
     
-
