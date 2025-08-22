@@ -108,7 +108,7 @@ export function Header() {
                             <SheetHeader className="p-4 border-b border-border text-left">
                               <SheetTitle>
                                 <Link href="/" className="flex items-center space-x-2" onClick={() => setMobileMenuOpen(false)}>
-                                    <Image src="/logo.svg" alt="Sneakswash Logo" width={28} height={28} className="text-primary" />
+                                    <Image src="/logo.png" alt="Sneakswash Logo" width={28} height={28} className="text-primary" />
                                 </Link>
                               </SheetTitle>
                             </SheetHeader>
