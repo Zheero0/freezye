@@ -79,12 +79,17 @@ import {
                                 <Section style={box} className="content-box">
                                 <Row style={headerRow}>
                                     <Column align="left">
-                                        <Img
-                                        src={`${baseUrl}/logo.png`}
-                                        width="58"
-                                        height="58"
-                                        alt="SneaksWash Logo"
-                                        />
+<Img
+  src={`${baseUrl}/logo.png`}
+  alt="SneaksWash Logo"
+  width="120"     // bump up from 58 → typical email header logo size
+  style={{
+    display: "block",
+    margin: "0",   // left aligned (no auto-centering)
+    height: "auto" // preserve aspect ratio
+  }}
+/>
+
                                     </Column>
                                     <Column align="right">
                                         <Text style={headerText}>Status Update</Text>
