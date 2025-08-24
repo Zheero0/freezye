@@ -11,6 +11,7 @@
     "populate-availability": "tsx src/scripts/populate-availability.ts"
   },
   "dependencies": {
+    "@easypost/api": "^8.2.0",
     "@hookform/resolvers": "^4.1.3",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
