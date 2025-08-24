@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/components/cart-provider';
-import Header from '@/components/header';
+import Header from '@/components/Header';
 import CartModal from '@/components/cart-modal';
 import { OrdersProvider } from '@/components/orders-provider';
 import PageTransitionLoader from '@/components/page-transition-loader';
