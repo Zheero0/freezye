@@ -1,17 +1,17 @@
-import type {Metadata} from 'next';
+
+import type { Metadata } from 'next';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster"
-import { AuthProvider } from '@/context/AuthContext';
+import { Toaster } from '@/components/ui/toaster';
+import { CartProvider } from '@/components/cart-provider';
+import Header from '@/components/header';
+import CartModal from '@/components/cart-modal';
+import { OrdersProvider } from '@/components/orders-provider';
+import PageTransitionLoader from '@/components/page-transition-loader';
 
-export const metadata = {
-  title: "SneaksWash",
-  description: "Professional sneaker cleaning for enthusiasts who care.",
-  icons: {
-    icon: "/icon_logo.png",
-    apple: "/icon_logo.png",
-  },
+export const metadata: Metadata = {
+  title: 'Freezye - Freeze-Dried Sweets',
+  description: 'The tastiest freeze-dried sweets on the planet.',
 };
-
 
 export default function RootLayout({
   children,
@@ -19,30 +19,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="h-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased">
-        <div className="fixed inset-0 z-0">
-          <div className="absolute left-1/2 top-0 h-[100vh] w-[100vw] -translate-x-1/2 bg-[radial-gradient(circle_50%_50%_at_50%_50%,#8EACFF33,transparent)] backdrop-blur-[2px]"></div>
-          <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
-            <div className="absolute -left-40 top-1/4 w-[400px] h-[400px] bg-primary/30 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-            <div className="absolute -right-40 bottom-1/4 w-[400px] h-[400px] bg-accent/30 rounded-full blur-3xl opacity-20 animate-pulse delay-1000"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl animate-spin-slow"></div>
-            <div className="absolute top-[80%] left-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-3xl opacity-10 animate-pulse delay-500"></div>
-            <div className="absolute top-[120%] right-[5%] w-[250px] h-[250px] bg-accent/20 rounded-full blur-3xl opacity-10 animate-pulse delay-1500"></div>
-          </div>
-        </div>
-        <AuthProvider>
-          <div className="relative z-10 flex flex-col min-h-screen">
-            {children}
-          </div>
-          <Toaster />
-        </AuthProvider>
+      <body className="font-body antialiased h-full">
+        <OrdersProvider>
+          <CartProvider>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">
+                <PageTransitionLoader>
+                  {children}
+                </PageTransitionLoader>
+              </main>
+              <footer className="bg-card text-card-foreground border-t">
+                <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-sm text-muted-foreground">
+                  &copy; {new Date().getFullYear()} Freezye. All Rights Reserved.
+                </div>
+              </footer>
+            </div>
+            <CartModal />
+            <Toaster />
+          </CartProvider>
+        </OrdersProvider>
       </body>
     </html>
   );
