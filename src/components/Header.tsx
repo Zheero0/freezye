@@ -1,106 +1,105 @@
+
 'use client';
 
 import Link from 'next/link';
-import { Candy, ShoppingCart, Menu } from 'lucide-react';
+import { Candy, ShoppingCart, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { useCart } from '@/hooks/use-cart';
-import { useEffect, useState } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useState, useEffect } from 'react';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/', label: 'Home' },
-  { href: '/products', label: 'Products' },
-  { href: '/admin', label: 'Admin' },
+    { href: '/', label: 'Home' },
+    { href: '/products', label: 'Products' },
+    { href: '/admin', label: 'Admin' },
 ];
-
-function NavLinks({ className, onClick }: { className?: string; onClick?: () => void }) {
-  return (
-    <nav className={cn('flex items-center gap-4 lg:gap-6', className)}>
-      {navItems.map((item) => (
-        <Link
-          key={item.label}
-          href={item.href}
-          className="transition-colors hover:text-foreground/80 text-foreground/60"
-          onClick={onClick}
-        >
-          {item.label}
-        </Link>
-      ))}
-    </nav>
-  );
-}
-
-function Logo({ onClick }: { onClick?: () => void }) {
-  return (
-    <Link href="/" className="flex items-center space-x-2" onClick={onClick}>
-      <Candy className="h-6 w-6 text-primary" />
-      <span className="font-bold font-headline">Freezye</span>
-    </Link>
-  );
-}
 
 export default function Header() {
   const { getItemCount, setIsCartOpen } = useCart();
+  const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  useEffect(() => setIsClient(true), []);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const itemCount = getItemCount();
+
+  const NavLinks = ({ className }: { className?: string }) => (
+    <nav className={cn("flex items-center gap-4 lg:gap-6", className)}>
+        {navItems.map((item) => (
+            <Link
+                key={item.label}
+                href={item.href}
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+                onClick={() => setIsMenuOpen(false)}
+            >
+                {item.label}
+            </Link>
+        ))}
+    </nav>
+  );
+
+  const Logo = () => (
+    <Link href="/" className="flex items-center space-x-2" onClick={() => isMenuOpen && setIsMenuOpen(false)}>
+        <Candy className="h-6 w-6 text-primary" />
+        <span className="font-bold font-headline">Freezye</span>
+    </Link>
+  );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center justify-between">
-        {/* Left: logo + nav (desktop) / menu (mobile) */}
-        <div className="flex items-center md:flex-1 pl-4 md:pl-8">
-          {/* Mobile menu */}
-          <div className="md:hidden mr-2">
-            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Open menu">
-                  <Menu />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-72">
-                <SheetTitle className="sr-only">Menu</SheetTitle>
-                <div className="flex flex-col gap-4 p-4">
-                  <Logo onClick={() => setIsMenuOpen(false)} />
-                  <NavLinks
-                    className="flex-col items-start gap-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          {/* Desktop logo+nav */}
-          <div className="hidden md:flex items-center gap-6">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex items-center">
             <Logo />
-            <NavLinks />
-          </div>
+            <nav className="flex items-center gap-4 lg:gap-6 ml-6">
+                <NavLinks />
+            </nav>
         </div>
 
-        {/* Center: logo (mobile only) */}
-        <div className="flex md:hidden flex-1 justify-center">
-          <Logo onClick={() => setIsMenuOpen(false)} />
-        </div>
+        {isMobile ? (
+             <div className="flex items-center justify-between w-full">
+                <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <Menu />
+                            <span className="sr-only">Open Menu</span>
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left">
+                        <SheetTitle className="sr-only">Menu</SheetTitle>
+                        <div className="flex flex-col gap-4 p-4">
+                            <div className="mb-4">
+                               <Logo />
+                            </div>
+                            <NavLinks className="flex-col items-start gap-2" />
+                        </div>
+                    </SheetContent>
+                </Sheet>
+                 <div className="flex justify-center flex-1">
+                    <Logo />
+                 </div>
+             </div>
+        ) : <div className="md:hidden"><Logo/></div>}
 
-        {/* Right: cart */}
-        <div className="flex items-center md:flex-1 justify-end pr-4 md:pr-8">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative"
-            onClick={() => setIsCartOpen(true)}
-            aria-label="Open cart"
-          >
-            <ShoppingCart className="h-5 w-5" />
-            {isClient && itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-secondary-foreground text-[10px] leading-none">
-                {itemCount}
-              </span>
-            )}
-          </Button>
+        <div className={cn("flex items-center justify-end space-x-2", isMobile ? "" : "flex-1")}>
+            <Button variant="ghost" size="icon" className="relative" onClick={() => setIsCartOpen(true)}>
+                <ShoppingCart className="h-5 w-5" />
+                {isClient && itemCount > 0 && (
+                    <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-secondary-foreground text-xs">
+                        {itemCount}
+                    </span>
+                )}
+                <span className="sr-only">Shopping Cart</span>
+            </Button>
         </div>
       </div>
     </header>
