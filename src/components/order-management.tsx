@@ -133,7 +133,6 @@ export default function OrderManagement() {
   const LoadingSkeleton = () => (
     <div className="min-h-[60vh] flex items-center justify-center">
         <BrandedLoader 
-            title="Loading Order Simulations..."
             description="Please wait while we conjure up your simulated order data."
         />
     </div>

@@ -25,7 +25,6 @@ function PageTransitionLoader({ children }: { children: React.ReactNode }) {
             {isLoading ? (
                  <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm">
                     <BrandedLoader 
-                        title="Loading..."
                         description="Please wait while we prepare your content."
                         isStatic={true}
                     />
@@ -40,7 +39,6 @@ function PageTransitionLoader({ children }: { children: React.ReactNode }) {
 PageTransitionLoader.Skeleton = function PageTransitionLoaderSkeleton() {
     return (
         <BrandedLoader
-            title="Loading..."
             description="Please wait while we prepare your content."
             isStatic={true}
         />

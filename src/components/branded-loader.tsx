@@ -6,12 +6,12 @@ import { Card, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Candy } from 'lucide-react';
 
 interface BrandedLoaderProps {
-    title: string;
+    title?: string;
     description: string;
     isStatic?: boolean;
 }
 
-export default function BrandedLoader({ title, description, isStatic = false }: BrandedLoaderProps) {
+export default function BrandedLoader({ title = "Freezye", description, isStatic = false }: BrandedLoaderProps) {
     return (
         <>
             <div className="fixed inset-0 bg-accent -z-10">

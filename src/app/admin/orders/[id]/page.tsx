@@ -11,9 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Candy } from 'lucide-react';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from '@/components/ui/alert-dialog';
+import { ArrowLeft, Candy, Package, Eye, Loader2, Copy } from 'lucide-react';
 import type { Order } from '@/types';
-import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import BrandedLoader from '@/components/branded-loader';
 
@@ -24,6 +24,11 @@ function OrderDetails() {
     const [order, setOrder] = useState<Order | undefined | null>(undefined);
     const [isClient, setIsClient] = useState(false);
     const { toast } = useToast();
+
+    // State for label generation
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [label, setLabel] = useState<{trackingNumber: string, labelUrl: string} | null>(null);
+    const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
@@ -36,11 +41,33 @@ function OrderDetails() {
         }
     }, [isClient, getOrderById, params.id]);
 
+    const handleCreateLabel = () => {
+        if (!order) return;
+        setIsGenerating(true);
+        // Simulate API call
+        setTimeout(() => {
+            const fakeTrackingNumber = `FRZYE${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+            setLabel({
+                trackingNumber: fakeTrackingNumber,
+                labelUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=' // 1x1 transparent pixel
+            });
+            setIsGenerating(false);
+            toast({
+                title: 'Label Generated',
+                description: `Tracking number: ${fakeTrackingNumber}`
+            })
+        }, 1500);
+    };
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        toast({ title: 'Copied to clipboard!'});
+    }
+
     if (!isClient || order === undefined) {
         return (
              <div className="relative min-h-[calc(100vh-10rem)] flex items-center justify-center">
                  <BrandedLoader 
-                    title="Summoning Order Details..."
                     description="Please wait while we fetch the complete order information."
                  />
             </div>
@@ -161,6 +188,10 @@ function OrderDetails() {
                                     <span>-£{order.discount.toFixed(2)}</span>
                                 </div>
                             )}
+                            <div className="flex justify-between">
+                                <span>Shipping</span>
+                                <span>£{order.shippingCost?.toFixed(2) ?? '0.00'}</span>
+                            </div>
                             <div className="flex justify-between font-bold">
                                 <span>Total</span>
                                 <span>£{order.total.toFixed(2)}</span>
@@ -174,6 +205,38 @@ function OrderDetails() {
                             <CardTitle>Status</CardTitle>
                             <StatusSelector order={order} />
                         </CardHeader>
+                    </Card>
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Shipping Label</CardTitle>
+                            {!label && <CardDescription>Generate a new label for this shipment.</CardDescription>}
+                        </CardHeader>
+                        <CardContent>
+                           {label ? (
+                               <div className="space-y-3">
+                                   <div>
+                                       <p className="text-sm font-medium">Tracking Number</p>
+                                       <div className="flex items-center gap-2">
+                                         <p className="text-muted-foreground text-sm font-mono">{label.trackingNumber}</p>
+                                         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => copyToClipboard(label.trackingNumber)}>
+                                             <Copy className="h-3 w-3" />
+                                         </Button>
+                                       </div>
+                                   </div>
+                                   <Button onClick={() => setIsLabelModalOpen(true)} variant="secondary" className="w-full">
+                                       <Eye className="mr-2 h-4 w-4"/> View Label
+                                   </Button>
+                               </div>
+                           ) : (
+                                <Button onClick={handleCreateLabel} disabled={isGenerating} className="w-full">
+                                    {isGenerating ? (
+                                        <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Generating...</>
+                                    ) : (
+                                        <><Package className="mr-2 h-4 w-4"/> Generate Shipping Label</>
+                                    )}
+                                </Button>
+                           )}
+                        </CardContent>
                     </Card>
                     <Card>
                         <CardHeader>
@@ -195,6 +258,103 @@ function OrderDetails() {
                     </Card>
                 </div>
             </div>
+
+            {label && (
+                <AlertDialog open={isLabelModalOpen} onOpenChange={setIsLabelModalOpen}>
+                    <AlertDialogContent className="max-w-lg w-full">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Shipping Label</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This is a mock shipping label. In a real application, this would be a PDF or image from a shipping provider.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <div className="bg-white text-black p-4 rounded-md aspect-[4/6] max-h-[70vh] overflow-y-auto">
+                            <div className="border-b-2 border-dashed border-black pb-4 text-center">
+                                <h3 className="font-bold text-lg">FREEZYE COSMIC SWEETS</h3>
+                                <p className="text-xs">Unit 42, Starship Enterprise, Outer Rim, NW10 7AB</p>
+                                <p className="text-xs font-bold">www.freezye.com</p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 py-4 border-b-2 border-dashed border-black">
+                                <div>
+                                    <p className="text-xs font-bold">SHIP FROM:</p>
+                                    <p className="text-xs">Freezye HQ</p>
+                                    <p className="text-xs">Unit 42, Starship Enterprise</p>
+                                    <p className="text-xs">Outer Rim, NW10 7AB, UK</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold">SHIP TO:</p>
+                                    <p className="text-xs">{order.customer.name}</p>
+                                    <p className="text-xs">{order.customer.street}</p>
+                                    <p className="text-xs">{order.customer.city}, {order.customer.zip}</p>
+                                    <p className="text-xs">{order.customer.country}</p>
+                                </div>
+                            </div>
+                            <div className="py-4 text-center">
+                                <p className="text-xs font-bold">TRACKING #: {label.trackingNumber}</p>
+                                <div className="flex justify-center items-center py-2">
+                                     <svg className="h-16 w-full" x="0px" y="0px" viewBox="0 0 320 60" >
+                                        <g>
+                                            <rect x="0" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="7" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="12" y="0" width="6" height="60" fill="black"/>
+                                            <rect x="22" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="28" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="34" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="40" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="48" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="53" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="60" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="66" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="72" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="78" y="0" width="6" height="60" fill="black"/>
+                                            <rect x="88" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="94" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="100" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="106" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="114" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="119" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="126" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="132" y="0" width="6" height="60" fill="black"/>
+                                            <rect x="142" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="148" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="154" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="160" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="168" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="173" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="180" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="186" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="192" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="198" y="0" width="6" height="60" fill="black"/>
+                                            <rect x="208" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="214" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="220" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="226" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="234" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="239" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="246" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="252" y="0" width="6" height="60" fill="black"/>
+                                            <rect x="262" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="268" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="274" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="280" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="288" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="293" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="300" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="306" y="0" width="4" height="60" fill="black"/>
+                                            <rect x="312" y="0" width="2" height="60" fill="black"/>
+                                            <rect x="318" y="0" width="2" height="60" fill="black"/>
+                                        </g>
+                                    </svg>
+                                </div>
+                                <p className="font-mono text-sm pt-1 tracking-widest">{label.trackingNumber}</p>
+                            </div>
+                        </div>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Close</AlertDialogCancel>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
         </div>
     );
 }

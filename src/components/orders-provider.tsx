@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Order } from '@/types';
 import { products } from '@/lib/products';
 
-const dummyOrders: Order[] = [
+const dummyOrders: Omit<Order, 'shippingCost'>[] = [
   {
     id: '1721234567890',
     date: new Date('2024-07-17T12:30:00Z').toISOString(),
@@ -27,7 +27,7 @@ const dummyOrders: Order[] = [
     ],
     subtotal: 23.27,
     discount: 0,
-    total: 23.27,
+    total: 28.26,
     shipping: 'standard',
     referralSource: 'instagram',
   },
@@ -49,7 +49,7 @@ const dummyOrders: Order[] = [
     ],
     subtotal: 15.98,
     discount: 0,
-    total: 15.98,
+    total: 28.97,
     shipping: 'express',
     referralSource: 'tiktok',
   },
@@ -71,12 +71,23 @@ const dummyOrders: Order[] = [
         { ...products[6], quantity: 1 },
     ],
     subtotal: 43.94,
-    discount: 0,
-    total: 43.94,
+    discount: 8.49,
+    total: 40.44,
     shipping: 'standard',
     referralSource: 'friend',
   }
 ];
+
+const SHIPPING_COSTS = {
+  standard: 4.99,
+  express: 12.99,
+};
+
+const getShippingCost = (shipping: string) => {
+    return shipping === 'express' ? SHIPPING_COSTS.express : SHIPPING_COSTS.standard;
+}
+
+const initialOrders: Order[] = dummyOrders.map(o => ({...o, shippingCost: getShippingCost(o.shipping)}));
 
 
 export function OrdersProvider({ children }: { children: React.ReactNode }) {
@@ -84,12 +95,10 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
-    // On initial load, if there are no orders in local storage, populate with dummy data.
     const storedOrders = window.localStorage.getItem('orders');
     if (!storedOrders || JSON.parse(storedOrders).length === 0) {
-      setOrders(dummyOrders);
+      setOrders(initialOrders);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addOrder = (newOrderData: Omit<Order, 'id' | 'date' | 'status'>): Order => {

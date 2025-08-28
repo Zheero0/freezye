@@ -100,6 +100,7 @@ function CheckoutForm({ clientSecret }: { clientSecret: string }) {
             items: cart.items,
             subtotal: cart.subtotal,
             discount: cart.discount,
+            shippingCost: cart.shippingCost,
             total: cart.total,
             shipping: data.shippingMethod,
             referralSource
@@ -306,7 +307,6 @@ export default function CheckoutWizard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-2 space-y-6 relative rounded-lg overflow-hidden min-h-[60vh]">
                  <BrandedLoader 
-                    title="Preparing Your Cosmic Treats..."
                     description="Please wait while we initialize a secure payment portal for your order."
                  />
             </div>

@@ -40,7 +40,6 @@ function OrderConfirmation() {
         return (
              <div className="relative min-h-[calc(100vh-10rem)] flex items-center justify-center">
                 <BrandedLoader 
-                    title="Finalizing Your Cosmic Order..."
                     description="Please wait while we fetch your order details."
                 />
             </div>
@@ -150,6 +149,10 @@ function OrderConfirmation() {
                                     <span>-£{order.discount.toFixed(2)}</span>
                                 </div>
                             )}
+                             <div className="flex justify-between">
+                                <span>Shipping</span>
+                                <span>£{order.shippingCost.toFixed(2)}</span>
+                            </div>
                             <Separator/>
                             <div className="flex justify-between font-bold">
                                 <span>Total Paid</span>
@@ -170,5 +173,3 @@ export default function OrderConfirmationPage() {
         </OrdersProvider>
     )
 }
-
-    

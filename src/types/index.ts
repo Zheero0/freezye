@@ -1,3 +1,4 @@
+
 export interface Product {
   id: string;
   name: string;
@@ -31,6 +32,7 @@ export interface Order {
   items: CartItem[];
   subtotal: number;
   discount: number;
+  shippingCost: number;
   total: number;
   customer: Address;
   shipping: string;
