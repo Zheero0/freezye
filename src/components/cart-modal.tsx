@@ -68,9 +68,9 @@ export default function CartModal() {
         <SheetContent className="flex flex-col w-full sm:max-w-lg h-full">
           <SheetHeader>
             <SheetTitle>Your Shopping Cart</SheetTitle>
-            <SheetDescription>
+            {/* <SheetDescription>
               Review your items and proceed to checkout.
-            </SheetDescription>
+            </SheetDescription> */}
           </SheetHeader>
 
           {items.length > 0 ? (
