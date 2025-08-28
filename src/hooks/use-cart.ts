@@ -1,7 +1,10 @@
+
 "use client";
 
 import { createContext, useContext } from 'react';
-import type { CartItem, Product } from '../types';
+import type { CartItem, Product } from '@/types';
+
+export type ShippingMethod = 'standard' | 'express';
 
 interface CartContextType {
   items: CartItem[];
@@ -12,7 +15,10 @@ interface CartContextType {
   getItemCount: () => number;
   subtotal: number;
   discount: number;
+  shippingCost: number;
   total: number;
+  shippingMethod: ShippingMethod;
+  setShippingMethod: (method: ShippingMethod) => void;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
 }

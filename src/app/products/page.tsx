@@ -1,5 +1,6 @@
-import ProductList from "../../components/product-list";
-import { products } from "../../lib/products";
+
+import ProductList from '@/components/product-list';
+import { products } from '@/lib/products';
 
 export default function ProductsPage() {
   return (
