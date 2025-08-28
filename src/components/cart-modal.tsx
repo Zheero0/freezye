@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState }from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/use-cart';
@@ -30,6 +30,10 @@ import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, Gift } from 'lucide-react';
 import DiscountProgress from './discount-progress';
 import { motion } from 'framer-motion';
+import { products } from '@/lib/products';
+import RecommendedProductItem from './recommended-product-item';
+import type { Product } from '@/types';
+
 
 export default function CartModal() {
   const { isCartOpen, setIsCartOpen, items, subtotal, discount, total, getItemCount } = useCart();
@@ -51,6 +55,16 @@ export default function CartModal() {
     setIsCartOpen(false);
     router.push('/checkout');
   };
+
+  const recommendedProducts = useMemo(() => {
+    if (items.length === 0) return products.slice(0, 3);
+    
+    const cartItemIds = items.map(item => item.id);
+    return products
+        .filter(p => !cartItemIds.includes(p.id))
+        .sort(() => 0.5 - Math.random()) // shuffle
+        .slice(0, 3);
+  }, [items]);
 
   return (
     <>
@@ -74,7 +88,19 @@ export default function CartModal() {
                   ))}
                 </div>
               </ScrollArea>
-              <SheetFooter className="mt-auto">
+
+              {recommendedProducts.length > 0 && (
+                <div className="mt-4 pt-4 border-t">
+                    <h3 className="text-sm font-semibold mb-2 text-center">You might also like...</h3>
+                    <div className="grid grid-cols-3 gap-2">
+                        {recommendedProducts.map((product) => (
+                            <RecommendedProductItem key={product.id} product={product} />
+                        ))}
+                    </div>
+                </div>
+              )}
+
+              <SheetFooter className="mt-auto pt-4">
                 <div className="flex flex-col space-y-4 w-full">
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -109,7 +135,18 @@ export default function CartModal() {
               <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
               <h2 className="text-2xl font-bold font-headline mb-2">Your Cart is Empty</h2>
               <p className="text-muted-foreground mb-6">Add some treats to get started!</p>
-              <Button onClick={() => setIsCartOpen(false)}>Continue Shopping</Button>
+              
+              {recommendedProducts.length > 0 && (
+                <div className="w-full mt-4 pt-4 border-t">
+                    <h3 className="text-lg font-semibold mb-4">Our Bestsellers</h3>
+                    <div className="grid grid-cols-3 gap-2">
+                        {recommendedProducts.map((product) => (
+                            <RecommendedProductItem key={product.id} product={product} />
+                        ))}
+                    </div>
+                     <Button onClick={() => setIsCartOpen(false)} className="mt-8">Start Shopping</Button>
+                </div>
+              )}
             </div>
           )}
         </SheetContent>
