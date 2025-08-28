@@ -78,27 +78,29 @@ export default function CartModal() {
           </SheetHeader>
           {items.length > 0 ? (
             <>
-                <ScrollArea className="flex-grow pr-6 -mr-6 my-4">
-                    <div className="px-6 -mx-6 mb-4">
-                      <DiscountProgress />
-                    </div>
-                    <div className="flex flex-col gap-4">
-                      {items.map((item) => (
-                          <CartItem item={item} key={item.id} />
-                      ))}
-                    </div>
+                <div className="flex-grow my-4 -mr-6 pr-6">
+                  <ScrollArea className="h-full">
+                      <div className="px-6 -mx-6 mb-4">
+                        <DiscountProgress />
+                      </div>
+                      <div className="flex flex-col gap-4">
+                        {items.map((item) => (
+                            <CartItem item={item} key={item.id} />
+                        ))}
+                      </div>
 
-                    {recommendedProducts.length > 0 && (
-                        <div className="mt-4 pt-4 border-t">
-                            <h3 className="text-sm font-semibold mb-2 text-center">You might also like...</h3>
-                            <div className="grid grid-cols-3 gap-2">
-                                {recommendedProducts.map((product) => (
-                                    <RecommendedProductItem key={product.id} product={product} />
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </ScrollArea>
+                      {recommendedProducts.length > 0 && (
+                          <div className="mt-4 pt-4 border-t">
+                              <h3 className="text-sm font-semibold mb-2 text-center">You might also like...</h3>
+                              <div className="grid grid-cols-3 gap-2">
+                                  {recommendedProducts.map((product) => (
+                                      <RecommendedProductItem key={product.id} product={product} />
+                                  ))}
+                              </div>
+                          </div>
+                      )}
+                  </ScrollArea>
+                </div>
 
               <SheetFooter className="mt-auto pt-4 border-t">
                 <div className="flex flex-col space-y-4 w-full">
