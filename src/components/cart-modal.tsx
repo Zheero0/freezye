@@ -65,7 +65,7 @@ export default function CartModal() {
   return (
     <>
       <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
-        <SheetContent className="flex flex-col w-full sm:max-w-lg">
+        <SheetContent className="flex flex-col w-full sm:max-w-lg h-full">
           <SheetHeader>
             <SheetTitle>Your Shopping Cart</SheetTitle>
             <SheetDescription>
@@ -76,8 +76,8 @@ export default function CartModal() {
           {items.length > 0 ? (
             <>
               {/* Scrollable content */}
-              <ScrollArea className="flex-1 my-4 pr-6">
-                <div className="px-6 mb-4">
+              <ScrollArea className="flex-1 my-4 px-6">
+                <div className="mb-4">
                   <DiscountProgress />
                 </div>
                 <div className="flex flex-col gap-4">
@@ -100,7 +100,8 @@ export default function CartModal() {
                 )}
               </ScrollArea>
 
-              <SheetFooter className="mt-auto pt-4 border-t">
+              {/* Fixed footer */}
+              <SheetFooter className="sticky bottom-0 left-0 right-0 bg-background pt-4 border-t px-6">
                 <div className="flex flex-col space-y-4 w-full">
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -139,8 +140,8 @@ export default function CartModal() {
               </SheetFooter>
             </>
           ) : (
-            <ScrollArea className="flex-1 my-4 pr-6">
-              <div className="flex flex-col items-center justify-center h-full text-center px-6">
+            <ScrollArea className="flex-1 my-4 px-6">
+              <div className="flex flex-col items-center justify-center h-full text-center">
                 <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
                 <h2 className="text-2xl font-bold font-headline mb-2">Your Cart is Empty</h2>
                 <p className="text-muted-foreground mb-6">
