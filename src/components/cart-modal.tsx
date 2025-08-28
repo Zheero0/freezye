@@ -76,7 +76,10 @@ export default function CartModal() {
           {items.length > 0 ? (
             <>
               {/* Scrollable content */}
-              <ScrollArea className="flex-1 my-4">
+              <ScrollArea
+                className="flex-1 my-4 pr-2"
+                style={{ scrollbarGutter: 'stable' }}
+              >
                 <div className="mb-4">
                   <DiscountProgress />
                 </div>
@@ -140,7 +143,10 @@ export default function CartModal() {
               </SheetFooter>
             </>
           ) : (
-            <ScrollArea className="flex-1 my-4">
+            <ScrollArea
+              className="flex-1 my-4 pr-2"
+              style={{ scrollbarGutter: 'stable' }}
+            >
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
                 <h2 className="text-2xl font-bold font-headline mb-2">Your Cart is Empty</h2>
