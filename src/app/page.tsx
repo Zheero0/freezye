@@ -201,17 +201,29 @@ export default function Home() {
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center text-foreground">
                     <Feature
-                        icon={<Rocket className="h-12 w-12 text-primary" />}
+                        icon={
+                            <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
+                                <Rocket className="h-12 w-12 text-primary" />
+                            </motion.div>
+                        }
                         title="UK Express Delivery"
                         description="Get your crunchy treats delivered to your door, fast. Don't wait to snack!"
                     />
                     <Feature
-                        icon={<Sparkles className="h-12 w-12 text-primary" />}
+                        icon={
+                            <motion.div animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
+                                <Sparkles className="h-12 w-12 text-primary" />
+                            </motion.div>
+                        }
                         title="Unbeatable Crunch"
                         description="Our special freeze-drying process creates a unique, satisfyingly airy crunch."
                     />
                     <Feature
-                        icon={<Star className="h-12 w-12 text-primary" />}
+                        icon={
+                             <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
+                                <Star className="h-12 w-12 text-primary" />
+                            </motion.div>
+                        }
                         title="5-Star Rated"
                         description="Join hundreds of happy customers who rave about our cosmic confections."
                     />

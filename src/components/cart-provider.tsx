@@ -15,6 +15,7 @@ const SHIPPING_COSTS = {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useLocalStorage<CartItem[]>('cart', []);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [shippingMethod, setShippingMethod] = useLocalStorage<ShippingMethod>('shippingMethod', 'standard');
   const { toast } = useToast();
 
@@ -92,6 +93,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     total,
     isCartOpen,
     setIsCartOpen,
+    isMenuOpen,
+    setIsMenuOpen,
     shippingMethod,
     setShippingMethod,
   };

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sheet"
 import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
+import { motion } from 'framer-motion';
 
 const navItems = [
     { href: '/', label: 'Home', icon: Home },
@@ -25,9 +26,8 @@ const navItems = [
 ];
 
 export default function Header() {
-  const { getItemCount, setIsCartOpen } = useCart();
+  const { getItemCount, setIsCartOpen, isMenuOpen, setIsMenuOpen } = useCart();
   const isMobile = useIsMobile();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
@@ -47,23 +47,40 @@ export default function Header() {
                     key={item.label}
                     asChild
                     variant="ghost"
-                    className="justify-start text-base py-6"
+                    className="justify-start text-base py-6 w-full group"
                     onClick={() => setIsMenuOpen(false)}
                 >
-                    <Link href={item.href}>
-                        <item.icon className="mr-4 h-5 w-5" />
+                    <Link href={item.href} className="flex items-center">
+                        <motion.div
+                            whileHover={{ rotate: [0, -15, 15, -15, 0] }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <item.icon className="mr-4 h-5 w-5" />
+                        </motion.div>
                         {item.label}
                     </Link>
                 </Button>
             ) : (
-                <Link
+                <Button
                     key={item.label}
-                    href={item.href}
-                    className="transition-colors hover:text-foreground/80 text-foreground/60 text-sm"
-                    onClick={() => setIsMenuOpen(false)}
+                    asChild
+                    variant="ghost"
+                    className="text-foreground/60 hover:text-foreground/80"
                 >
-                    {item.label}
-                </Link>
+                    <Link
+                        href={item.href}
+                        className="flex items-center gap-2"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                         <motion.div
+                            whileHover={{ scale: 1.2, rotate: -5 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        >
+                            <item.icon className="h-4 w-4" />
+                         </motion.div>
+                        {item.label}
+                    </Link>
+                </Button>
             )
         ))}
     </nav>
@@ -81,9 +98,9 @@ export default function Header() {
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex items-center">
             <Logo />
-            <nav className="flex items-center gap-4 lg:gap-6 ml-6">
+            <div className="ml-6">
                 <NavLinks />
-            </nav>
+            </div>
         </div>
 
         {isMobile ? (
@@ -97,8 +114,10 @@ export default function Header() {
                     </SheetTrigger>
                     <SheetContent side="left" className="flex flex-col p-0">
                         <SheetHeader className="p-4 border-b">
-                            <Logo />
-                            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                           <div className="flex items-center gap-2">
+                             <Logo />
+                           </div>
+                           <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                         </SheetHeader>
                         <div className="p-4 flex-1">
                             <NavLinks inSheet={true} />

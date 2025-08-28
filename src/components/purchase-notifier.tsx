@@ -39,15 +39,15 @@ const RecentPurchaseToast = ({ productName, location }: { productName: string, l
 
 export default function PurchaseNotifier() {
     const { toast } = useToast();
-    const { isCartOpen } = useCart();
+    const { isCartOpen, isMenuOpen } = useCart();
     const pathname = usePathname();
 
     useEffect(() => {
         let interval: NodeJS.Timeout | undefined;
 
-        const isCheckoutFlow = isCartOpen || pathname.startsWith('/checkout');
+        const shouldPauseToasts = isCartOpen || isMenuOpen || pathname.startsWith('/checkout') || pathname.startsWith('/admin');
 
-        if (!isCheckoutFlow) {
+        if (!shouldPauseToasts) {
             const showRandomToast = () => {
                 const randomProduct = getRandomItem(products);
                 const randomLocation = getRandomItem(locations);
@@ -73,14 +73,14 @@ export default function PurchaseNotifier() {
             };
         }
         
-        // If in checkout flow, do nothing and ensure any existing interval is cleared by the cleanup.
+        // If toasts should be paused, do nothing and ensure any existing interval is cleared by the cleanup.
         return () => {
             if (interval) {
                 clearInterval(interval);
             }
         };
 
-    }, [toast, isCartOpen, pathname]);
+    }, [toast, isCartOpen, isMenuOpen, pathname]);
 
     return null;
 }

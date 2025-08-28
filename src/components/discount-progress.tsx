@@ -17,14 +17,21 @@ export default function DiscountProgress() {
     const progress = ((itemsNeededForOffer - itemsAway) / itemsNeededForOffer) * 100;
     const isOfferUnlocked = itemsAway === 0 && itemCount > 0;
 
+    const giftAnimation = {
+        scale: [1, 1.1, 1],
+        transition: {
+            duration: 1,
+            repeat: Infinity,
+            repeatDelay: 4,
+            ease: "easeInOut",
+        }
+    };
+    
     return (
         <div className="bg-muted p-4 rounded-lg text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
                 <motion.div
-                    key={itemCount} // Re-trigger animation when itemCount changes
-                    initial={{ scale: 1, rotate: 0 }}
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, -10, 10, 0] }}
-                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                    animate={giftAnimation}
                 >
                     <Gift className={cn("h-5 w-5", isOfferUnlocked ? "text-primary" : "text-muted-foreground")} />
                 </motion.div>

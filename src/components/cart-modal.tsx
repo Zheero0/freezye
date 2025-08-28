@@ -174,8 +174,11 @@ export default function CartModal() {
         <AlertDialogContent>
           <AlertDialogHeader className="text-center items-center">
             <motion.div
-              animate={{ rotate: [-15, 15, -15, 0], scale: [1, 1.1, 1] }}
-              transition={{ duration: 0.5, repeat: 1, repeatDelay: 2, ease: 'easeInOut' }}
+              animate={{ 
+                scale: [1, 1.25, 1, 1.25, 1],
+                rotate: [0, -10, 10, -10, 0],
+              }}
+              transition={{ duration: 1, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
               className="bg-primary/20 text-primary rounded-full h-16 w-16 flex items-center justify-center mb-4"
             >
               <Gift className="h-8 w-8" />

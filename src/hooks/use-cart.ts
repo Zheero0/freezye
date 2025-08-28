@@ -21,6 +21,8 @@ interface CartContextType {
   setShippingMethod: (method: ShippingMethod) => void;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
+  isMenuOpen: boolean;
+  setIsMenuOpen: (isOpen: boolean) => void;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
