@@ -1,9 +1,10 @@
-'use client';
+"use-client";
 
-import { useCart } from '@/hooks/use-cart';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import Image from 'next/image';
+import { useCart } from "../hooks/use-cart";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Separator } from "./ui/separator";
+import { Candy } from "lucide-react";
+import Image from "next/image";
 
 export default function CartSummary() {
   const { items, subtotal, discount, total } = useCart();
@@ -15,22 +16,25 @@ export default function CartSummary() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-            {items.map((item) => (
-                <div key={item.id} className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="relative h-12 w-12 rounded-md overflow-hidden flex-shrink-0">
-                            <Image src={item.imageUrl} alt={item.name} fill className="object-cover" data-ai-hint={item.imageHint}/>
-                        </div>
-                        <div>
-                            <p className="font-medium">{item.name}</p>
-                            <p className="text-muted-foreground">
-                                Qty: {item.quantity}
-                            </p>
-                        </div>
-                    </div>
-                    <p className="font-medium">£{(item.price * item.quantity).toFixed(2)}</p>
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between text-sm"
+            >
+              <div className="flex items-center gap-3">
+                <div className="relative h-12 w-12 rounded-md bg-muted flex-shrink-0 flex items-center justify-center">
+                  <Candy className="h-6 w-6 text-muted-foreground" />
                 </div>
-            ))}
+                <div>
+                  <p className="font-medium">{item.name}</p>
+                  <p className="text-muted-foreground">Qty: {item.quantity}</p>
+                </div>
+              </div>
+              <p className="font-medium">
+                £{(item.price * item.quantity).toFixed(2)}
+              </p>
+            </div>
+          ))}
         </div>
 
         <Separator className="my-4" />

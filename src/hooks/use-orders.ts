@@ -2,7 +2,7 @@
 "use client";
 
 import { createContext, useContext } from 'react';
-import type { Order } from '@/types';
+import type { Order } from '../types';
 
 interface OrdersContextType {
   orders: Order[];
