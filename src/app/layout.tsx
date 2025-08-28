@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import CartModal from '@/components/cart-modal';
 import { OrdersProvider } from '@/components/orders-provider';
 import SuspenseWrapper from '@/components/suspense-wrapper';
+import PurchaseNotifier from '@/components/purchase-notifier';
 
 export const metadata: Metadata = {
   title: 'Freezye - Freeze-Dried Sweets',
@@ -43,6 +44,7 @@ export default function RootLayout({
             </div>
             <CartModal />
             <Toaster />
+            <PurchaseNotifier />
           </CartProvider>
         </OrdersProvider>
       </body>
