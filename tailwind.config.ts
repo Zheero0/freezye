@@ -8,10 +8,21 @@ export default {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
+      textShadow: {
+        DEFAULT: '0 2px 4px rgba(0,0,0,0.10)',
+        lg: '0 4px 10px rgba(0,0,0,0.20)',
+      },
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Space Grotesk', 'sans-serif'],
+        body: ['Lato', 'sans-serif'],
+        headline: ['Lato', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -88,21 +99,25 @@ export default {
             height: '0',
           },
         },
-        'spin-slow': {
-          from: {
-            transform: 'rotate(0deg)',
-          },
-          to: {
-            transform: 'rotate(360deg)',
-          },
-        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'spin-slow': 'spin-slow 20s linear infinite',
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwindcss/plugin')(function({ addUtilities, theme }: {addUtilities: any, theme: any}) {
+      const newUtilities = {
+        '.text-shadow': {
+          textShadow: theme('textShadow.DEFAULT'),
+        },
+        '.text-shadow-lg': {
+          textShadow: theme('textShadow.lg'),
+        },
+      }
+      addUtilities(newUtilities, ['responsive', 'hover'])
+    })
+  ],
 } satisfies Config;
