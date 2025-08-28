@@ -75,7 +75,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     const shippingCost = items.length > 0 ? SHIPPING_COSTS[shippingMethod] : 0;
-    const total = subtotal - discount + shippingCost;
+    const total = subtotal - discount; // Shipping cost removed from here
     return { subtotal, discount, shippingCost, total };
   }, [items, shippingMethod]);
 

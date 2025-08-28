@@ -101,7 +101,7 @@ function CheckoutForm({ clientSecret }: { clientSecret: string }) {
             subtotal: cart.subtotal,
             discount: cart.discount,
             shippingCost: cart.shippingCost,
-            total: cart.total,
+            total: cart.total + cart.shippingCost, // Add shipping cost to final total here
             shipping: data.shippingMethod,
             referralSource
         });
@@ -206,11 +206,12 @@ export default function CheckoutWizard() {
   }, []);
 
   useEffect(() => {
-    if (cart.total > 0) {
+    const totalWithShipping = cart.total + cart.shippingCost;
+    if (totalWithShipping > 0) {
       fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: Math.round(cart.total * 100) }),
+        body: JSON.stringify({ amount: Math.round(totalWithShipping * 100) }),
       })
       .then(res => res.json())
       .then(data => {
@@ -223,7 +224,7 @@ export default function CheckoutWizard() {
         console.error("Fetch error for payment intent:", error);
       });
     }
-  }, [cart.total]);
+  }, [cart.total, cart.shippingCost]);
 
 
   if (!isClient) {

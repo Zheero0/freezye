@@ -55,7 +55,7 @@ export default function CartSummary() {
           <Separator />
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span>£{total.toFixed(2)}</span>
+            <span>£{(total + shippingCost).toFixed(2)}</span>
           </div>
         </div>
       </CardContent>
