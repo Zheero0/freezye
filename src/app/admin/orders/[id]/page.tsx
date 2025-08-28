@@ -29,8 +29,6 @@ function OrderDetails() {
     const { getOrderById, updateOrderStatus } = useOrders();
     const [order, setOrder] = useState<Order | undefined | null>(undefined);
     const [isClient, setIsClient] = useState(false);
-    const [label, setLabel] = useState<Label | null>(null);
-    const [isGenerating, setIsGenerating] = useState(false);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -43,28 +41,6 @@ function OrderDetails() {
             setOrder(foundOrder);
         }
     }, [isClient, getOrderById, params.id]);
-
-     const handleCreateLabel = async () => {
-        if (!order) return;
-        setIsGenerating(true);
-        setLabel(null);
-
-        // Simulate API call
-        setTimeout(() => {
-            const mockLabel: Label = {
-                trackingCode: `FRZYE${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
-                carrier: 'MockShip',
-                labelUrl: 'https://placehold.co/800x1200.png?text=Mock+Shipping+Label'
-            };
-            setLabel(mockLabel);
-            setIsGenerating(false);
-            toast({
-                title: "Mock Label Generated",
-                description: `Tracking code: ${mockLabel.trackingCode}`
-            });
-        }, 2000);
-    };
-
 
     if (!isClient || order === undefined) {
         return (
@@ -220,49 +196,6 @@ function OrderDetails() {
                                 <p className="text-xs text-muted-foreground">Referred from: <span className="font-medium capitalize">{order.referralSource}</span></p>
                             </CardFooter>
                         )}
-                    </Card>
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Shipping</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {!label && (
-                                <Button onClick={handleCreateLabel} disabled={isGenerating} className="w-full">
-                                    {isGenerating ? (
-                                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</>
-                                    ) : (
-                                        <><Truck className="mr-2 h-4 w-4" /> Generate Shipping Label</>
-                                    )}
-                                </Button>
-                            )}
-                            {label && (
-                                <div className="space-y-4">
-                                    <div className="space-y-2 text-sm border p-3 rounded-md">
-                                        <div className="flex justify-between">
-                                            <span className="text-muted-foreground">Carrier</span>
-                                            <span className="font-medium">{label.carrier}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-muted-foreground">Tracking #</span>
-                                            <button 
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(label.trackingCode);
-                                                    toast({ title: 'Copied to clipboard!' });
-                                                }}
-                                                className="flex items-center gap-1 font-mono text-xs p-1 rounded hover:bg-muted"
-                                            >
-                                                {label.trackingCode}
-                                                <ClipboardCheck className="h-3 w-3" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <a href={label.labelUrl} target="_blank" rel="noopener noreferrer" className="w-full">
-                                        <Button variant="secondary" className="w-full">View Label</Button>
-                                    </a>
-                                     <Button onClick={() => setLabel(null)} variant="outline" size="sm" className="w-full mt-2">Create New Label</Button>
-                                </div>
-                            )}
-                        </CardContent>
                     </Card>
                 </div>
             </div>
