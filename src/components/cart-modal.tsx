@@ -93,9 +93,14 @@ export default function CartModal() {
                         <span>£{total.toFixed(2)}</span>
                       </div>
                     </div>
-                    <Button onClick={handleCheckout} size="lg" className="w-full">
-                      Proceed to Checkout
-                    </Button>
+                    <div className="grid grid-cols-2 gap-2">
+                        <Button onClick={() => { setIsCartOpen(false); router.push('/products'); }} size="lg" variant="outline" className="w-full">
+                          Continue Shopping
+                        </Button>
+                        <Button onClick={handleCheckout} size="lg" className="w-full">
+                          Proceed to Checkout
+                        </Button>
+                    </div>
                 </div>
               </SheetFooter>
             </>
